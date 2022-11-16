@@ -1,0 +1,103 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <string>
+#include "fssimplewindow.h"
+#include "yssimplesound.h"
+#include "ysglfontdata.h"
+#include <textstring.h>
+using namespace std;
+class Draw
+{
+public:
+int bx, by, wx, wy;
+void Initialize();
+void Background(int level);
+void Block();
+void Word(string wordList[]);
+};
+void Draw::Initialize(void)
+{
+bx = 0, by = 0, wx = 0, wy = 0;
+}
+void Draw::Background(int level)
+{
+}
+void Draw::Block(void)
+{
+}
+void Draw::Word(string wordList[])
+{
+}
+class Tracker
+{
+public:
+int points;
+double percent;
+void Initialize();
+double Points(double accuracy, double speed);
+double Progress(int numCompleted, int numPrepared);
+};
+void Tracker::Initialize(void)
+{
+points = 0; percent = 0.0;
+}
+double Tracker::Points(double accuracy, double speed)
+{
+return 0.0;
+}
+double Tracker::Progress(int numCompleted, int numPrepared)
+{
+return 0.0;
+}
+bool Input(string word)
+{
+TextString input;
+string attempt;
+attempt = input.Fgets(stdin);
+if (attempt == word)
+{
+return TRUE;
+}
+else
+{
+return FALSE;
+}
+}
+int main()
+{
+FsChangeToProgramDir();
+YsSoundPlayer player;
+Draw d;
+Tracker t;
+string wordList[] = { "test", "write", "see", "what", "now" };
+int location = rand() % sizeof(wordList);
+string chosen = wordList[location];
+int count = 0;
+for (int i = location; i < sizeof(wordList); i++)
+{
+wordList[i] = wordList[i + 1];
+}
+count++;
+location = rand() % sizeof(wordList - count);
+d.Initialize();
+t.Initialize();
+FsOpenWindow(16, 16, 800, 600, 1);
+for (;;)
+{
+FsPollDevice();
+auto key = FsInkey();
+if (FSKEY_ESC == key)
+{
+break;
+}
+glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+}
+    
+    
+    return 0;
+}
+// 3 - 5 levels, successfully completing level goes to the next stage in the game
+// Level / Progress tracker
+// Point tracker
+// Levels each follow the storyline
