@@ -1,3 +1,5 @@
+#include <iostream>
+#include <cstring>
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
@@ -46,8 +48,6 @@ protected:
 		return data;
 	}
 };
-
-
 
 
 class TextString : public GenericCharArray{
@@ -161,8 +161,6 @@ void TextString::Print(void) const{
 }
 
 
-
-
 class TextInput{
 public:
 	TextString str;
@@ -179,7 +177,7 @@ void TextInput::BeginInput(void){
 }
 
 void TextInput::RunOneStep(int key,int c){
-	if(FSKEY_ENTER==key){
+	if(FSKEY_ESC==key){
 		terminate=true;
 	}
 	if(FSKEY_BS==key){
@@ -191,7 +189,7 @@ void TextInput::RunOneStep(int key,int c){
 }
 
 void TextInput::Draw(void) const{
-	glRasterPos2i(32,32);
+	glRasterPos2i(100,52);
 
 	auto copy=str;
 	if(0==time(nullptr)%2){
@@ -203,8 +201,28 @@ void TextInput::Draw(void) const{
 	YsGlDrawFontBitmap12x16(copy.GetPointer());
 }
 
+void drawTargetWord(char letters[]){
+	glRasterPos2i(100, 32);
+	YsGlDrawFontBitmap12x16(letters);
+}
+
+void drawResult(bool result){
+	if(result == 1){
+		glRasterPos2i(400, 32);
+		YsGlDrawFontBitmap12x16("Correct!");
+	}else{
+		glRasterPos2i(400, 32);
+		YsGlDrawFontBitmap12x16("Incorrect Spelling, Try Again.");
+		std::cout << result;
+	}
+}
+
 int main(void){
+	std::string wordBank[4] = {"cow", "apple", "space", "rover"};
+	int wordCount = 0;
+
 	FsOpenWindow(16,16,800,600,1);
+
 
 	TextInput textInput;
 
@@ -214,18 +232,45 @@ int main(void){
 		auto key=FsInkey();
 		auto c=FsInkeyChar();
 
-		textInput.RunOneStep(key,c);
-
 		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+		glColor3f(0,0,0);
 
+		std::string targetWord = wordBank[wordCount];
+		auto len = targetWord.size();
+		char letters[len+1];
+		strcpy(letters, targetWord.c_str());
+
+		TextString test = textInput.str.GetPointer();
+
+		textInput.RunOneStep(key,c);
+		drawTargetWord(letters);
 		textInput.Draw();
+		// std::cout << test.GetPointer() << std::endl;
+
+		if(FSKEY_ENTER == key){
+			if(test.GetPointer() == targetWord){
+				wordCount++;
+				glColor3f(0,1,0);
+				drawResult(true);
+				FsSwapBuffers();
+				FsSleep(2000);
+			}else{
+				glColor3f(1,0,0);
+				drawResult(false);
+				FsSwapBuffers();
+				FsSleep(2000);
+			}
+			textInput.str.CleanUp();
+			test.CleanUp();
+		}
+
 
 		FsSwapBuffers();
-		FsSleep(25);
+		FsSleep(10);
 	}
 
-	textInput.str.Print();
-
+	// textInput.str.Print();
+	std::cout << wordCount;
 	return 0;
 }
 
