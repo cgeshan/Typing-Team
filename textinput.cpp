@@ -5,6 +5,7 @@
 #include <time.h>
 #include "fssimplewindow.h"
 #include "ysglfontdata.h"
+#include "yspng.h"
 
 
 class GenericCharArray{
@@ -189,7 +190,7 @@ void TextInput::RunOneStep(int key,int c){
 }
 
 void TextInput::Draw(void) const{
-	glRasterPos2i(100,52);
+	glRasterPos2i(100,62);
 
 	auto copy=str;
 	if(0==time(nullptr)%2){
@@ -198,21 +199,23 @@ void TextInput::Draw(void) const{
 	else{
 		copy.Add('_');
 	}
-	YsGlDrawFontBitmap12x16(copy.GetPointer());
+	YsGlDrawFontBitmap16x24(copy.GetPointer());
 }
 
 void drawTargetWord(char letters[]){
 	glRasterPos2i(100, 32);
-	YsGlDrawFontBitmap12x16(letters);
+	YsGlDrawFontBitmap16x24(letters);
 }
 
 void drawResult(bool result){
 	if(result == 1){
 		glRasterPos2i(400, 32);
-		YsGlDrawFontBitmap12x16("Correct!");
+		YsGlDrawFontBitmap16x24("Correct!");
 	}else{
 		glRasterPos2i(400, 32);
-		YsGlDrawFontBitmap12x16("Incorrect Spelling, Try Again.");
+		YsGlDrawFontBitmap16x24("Incorrect Spelling");
+		glRasterPos2i(410, 62);
+		YsGlDrawFontBitmap16x24("Try Again");
 		std::cout << result;
 	}
 }
@@ -221,8 +224,11 @@ int main(void){
 	std::string wordBank[4] = {"cow", "apple", "space", "rover"};
 	int wordCount = 0;
 
-	FsOpenWindow(16,16,800,600,1);
+	YsRawPngDecoder bkgd;
+	bkgd.Decode("background.png");
+	bkgd.Flip();
 
+	FsOpenWindow(16,16,800,600,1);
 
 	TextInput textInput;
 
@@ -233,7 +239,10 @@ int main(void){
 		auto c=FsInkeyChar();
 
 		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-		glColor3f(0,0,0);
+		glColor3f(1,1,1);
+
+		glRasterPos2i(0, 599);
+		glDrawPixels(bkgd.wid,bkgd.hei,GL_RGBA,GL_UNSIGNED_BYTE,bkgd.rgba);
 
 		std::string targetWord = wordBank[wordCount];
 		auto len = targetWord.size();
