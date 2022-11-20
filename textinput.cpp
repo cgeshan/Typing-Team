@@ -261,8 +261,10 @@ int main(void){
 				wordCount++;
 				glColor3f(0,1,0);
 				drawResult(true);
+				auto completeTime = FsPassedTime();
+				std::cout << completeTime*0.001 << std::endl;
 				FsSwapBuffers();
-				FsSleep(2000);
+				FsSleep(1000);
 			}else{
 				glColor3f(1,0,0);
 				drawResult(false);
