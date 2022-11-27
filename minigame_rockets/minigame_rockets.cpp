@@ -17,11 +17,11 @@ public:
 
 	double x1, y1, x2, y2;
 	int vel1, vel2; 
-	int state1, state2;
+	int vis1, vis2, state1, state2;
 
 	void Initialize(void);
 	void drawBackground();
-	void drawRocket(void);
+	void drawRocket(char str[]);
 	void moveRocket1(void);
 	void moveRocket2(void);
 	void speedRocket1(void);
@@ -34,12 +34,15 @@ void Rockets::Initialize()
 	x1 = 150;
 	x2 = 450;
 	y1 = 600; // rockets both start at the bottom of the screen
-	y2 = 900; 
+	y2 = 600; 
 
 	vel1 = 5; // initial velocities for rockets  
-	vel2 = 5; 
+	vel2 = 5;
 
-	state1 = 0; // state becomes one when word is typed correctly 
+	vis1 = 1; // visability state, 1: rocket is on the screen, 0: rocket is not on the screen
+	vis2 = 0;
+
+	state1 = 0; // state becomes one when word is typed correctly (rocket speeds to top) 
 	state2 = 0; 
 
 	// image data
@@ -62,39 +65,62 @@ void Rockets::drawBackground()
 	glDisable(GL_BLEND);
 }
 
-void Rockets::drawRocket()
+void Rockets::drawRocket(char str[])
 {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	glRasterPos2i(x1, y1);
-	glDrawPixels(png[1].wid, png[1].hei, GL_RGBA, GL_UNSIGNED_BYTE, png[1].rgba);
-	glRasterPos2i(x2, y2);
-	glDrawPixels(png[2].wid, png[2].hei, GL_RGBA, GL_UNSIGNED_BYTE, png[2].rgba);
+	if (vis1 == 1)
+	{
+		glRasterPos2i(x1, y1);
+		glDrawPixels(png[1].wid, png[1].hei, GL_RGBA, GL_UNSIGNED_BYTE, png[1].rgba);
+		glDisable(GL_BLEND);
 
-	glDisable(GL_BLEND);
+		glColor3ub(255, 255, 255);
+		glRasterPos2d(x1 + 50, y1 + 50);
+		YsGlDrawFontBitmap20x32(str);
+		glFlush();
+	}
+	if (vis2 == 1)
+	{
+		glRasterPos2i(x2, y2);
+		glDrawPixels(png[2].wid, png[2].hei, GL_RGBA, GL_UNSIGNED_BYTE, png[2].rgba);
+
+		glColor3ub(255, 255, 255);
+		glRasterPos2d(x2 + 90, y2 + 50);
+		YsGlDrawFontBitmap20x32(str);
+		glFlush();
+	}
 }
 
 void Rockets::moveRocket1()
 {
-	y1 -= vel1;
+	if (vis1 == 1) // only move rocket if it's visable
+	{
+		y1 -= vel1;
+	}
 }
 
 void Rockets::moveRocket2()
 {
-	y2 -= vel2;
+	if (vis2 == 1) // only move rocket if it's visable
+	{
+		y2 -= vel2;
+	}
 }
 
 void Rockets::speedRocket1()
 {
 	vel1 += 4; 
 
-	if (y1 < -10)
+	if (y1 < -100)
 	{
 		vel1 = 5; // return to original velocity
 		state1 = 0; 
-		y1 = 800; // reset y
+		y1 = 600; // reset y
 		x1 = (rand() % 601) + 100; // random value for x between 100 and 700
+		vis1 = 0; // rocket is no longer visable
+		vis2 = 1; // set other rocket to visable (switch)
 	}
 }
 
@@ -102,12 +128,14 @@ void Rockets::speedRocket2()
 {
 	vel2 += 4; 
 
-	if (y2 < 0)
+	if (y2 < -100)
 	{
 		vel2 = 5; // return to original velocity
 		state2 = 0; 
-		y2 = 800; // reset y
+		y2 = 600; // reset y
 		x2 = (rand() % 601) + 100; // random value for x between 100 and 700
+		vis2 = 0; // rocket is no longer visable 
+		vis1 = 1; // set other rocket to visable (switch)
 	}
 }
 
@@ -129,8 +157,9 @@ int main(void)
 	Rockets rockets;
 	rockets.Initialize();
 
-	FsOpenWindow(0, 0, 800, 600, 1);
+	char str[] = { 'c', 'o', 'w' }; // test string
 
+	FsOpenWindow(0, 0, 800, 600, 1);
 
 	// initialize time variables 
 	int time_init, time_final = 0;
@@ -150,11 +179,11 @@ int main(void)
 
 		case FSKEY_ENTER: // this should change to if user clicks enter and the word is correct, then do stuff in if statemtent 
 
-			if (rockets.state1 == 0) // if rocket is not speeding **********and word is typed correctly**********
+			if (rockets.vis1 == 1 && rockets.state1 == 0) // if rocket is visable, not speeding, **********and word is typed correctly**********
 			{
 				rockets.state1 = 1;
 			}
-			else
+			if (rockets.vis2 == 1 && rockets.state2 == 0)
 			{
 				rockets.state2 = 1; 
 			}
@@ -164,15 +193,15 @@ int main(void)
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		rockets.drawBackground();
-		rockets.drawRocket();
+		rockets.drawRocket(str);
 		rockets.moveRocket1();
 		rockets.moveRocket2();
 
-		if (rockets.state1 == 1)
+		if (rockets.vis1 == 1 && rockets.state1 == 1)
 		{
 			rockets.speedRocket1();
 		}
-		if (rockets.state2 == 1)
+		if (rockets.vis2 == 1 && rockets.state2 == 1)
 		{
 			rockets.speedRocket2();
 		}
