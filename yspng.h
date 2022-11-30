@@ -1,7 +1,7 @@
 /* ////////////////////////////////////////////////////////////
 
 File Name: yspng.h
-Copyright (c) 2017 Soji Yamakawa.  All rights reserved.
+Copyright (c) 2015 Soji Yamakawa.  All rights reserved.
 http://www.ysflight.com
 
 Redistribution and use in source and binary forms, with or without modification, 
@@ -31,56 +31,30 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define YSPNG_IS_INCLUDED
 /* { */
 
-#include <stdio.h>
-
 #ifndef YSRESULT_IS_DEFINED
-#define YSRESULT_IS_DEFINED
-/*! Enum for processing result. */
-typedef enum
-{
-	YSERR,  /*!< There were error(s). */
-	YSOK    /*!< The process was successful. */
-} YSRESULT;
+#define YSERR 0
+#define YSOK 1
 #endif
 
 #ifndef YSBOOL_IS_DEFINED
 #define YSBOOL_IS_DEFINED
-/*! Enum for boolearn. */
-typedef enum
-{
-	YSFALSE,     /*!< False */
-	YSTRUE,      /*!< True */
-	YSTFUNKNOWN  /*!< Unable to tell true or false. */
-} YSBOOL;
+#define YSFALSE 0
+#define YSTRUE  1
 #endif
 
 
 
 class YsPngHuffmanTree
 {
-private:
-	YsPngHuffmanTree *zeroOne[2];
 public:
 	YsPngHuffmanTree();
 	~YsPngHuffmanTree();
+	YsPngHuffmanTree *zero,*one;
 	unsigned int dat;
 	unsigned int weight,depth;
 	static int leakTracker;
 
 	static void DeleteHuffmanTree(YsPngHuffmanTree *node);
-
-	inline YsPngHuffmanTree *&Zero(void)
-	{
-		return zeroOne[0];
-	}
-	inline YsPngHuffmanTree *&One(void)
-	{
-		return zeroOne[1];
-	}
-	inline YsPngHuffmanTree *&Traverse(int zeroOrOne)
-	{
-		return zeroOne[zeroOrOne];
-	}
 };
 
 class YsPngUncompressor
@@ -229,18 +203,6 @@ public:
 
 class YsRawPngDecoder : public YsGenericPngDecoder
 {
-/*
-Variables are exposed to the outside of the class as public.
-Please make appropriate defense against data corruption yourself.
-I suggest your code to take ownership of rgba pointer, 
-set rgba=nullptr; wid=0; hei=0; then your code manages the pointer.
-*/
-
-private:
-	// Don't copy.
-	YsRawPngDecoder(const YsRawPngDecoder &);
-	YsRawPngDecoder &operator=(const YsRawPngDecoder &);
-
 public:
 	YsRawPngDecoder();
 	~YsRawPngDecoder();
