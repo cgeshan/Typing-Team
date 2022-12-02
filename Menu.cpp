@@ -308,6 +308,7 @@ int main(void)
 	Menu menu;
 	menu.Initialize();
 
+	FsChangeToProgramDir();
 	FsOpenWindow(0, 0, 800, 600, 1);
 	
 	int level = 0;
@@ -360,18 +361,18 @@ int main(void)
 			if (lb)
 			{
 				//Go to overworld first
-				GameData overworld;
-				overworld.Initialize();
+				// GameData overworld;
+				// overworld.Initialize();
 				
-				for(;;){
+				// for(;;){
 					
-					overworld.Run();
+				// 	overworld.Run();
 					
-					if(true == overworld.terminate){
-						break;
-					}
-					// FsSleep(10);
-				}
+				// 	if(true == overworld.terminate){
+				// 		break;
+				// 	}
+				// 	// FsSleep(10);
+				// }
 				
 				//Mini Game 1
 				printf("Mars Mini Game");
@@ -395,19 +396,19 @@ int main(void)
 			h2 = 1;
 			if (lb)
 			{
-				//Go to overworld first
-				GameData overworld;
-				overworld.Initialize();
+				// //Go to overworld first
+				// GameData overworld;
+				// overworld.Initialize();
 				
-				for(;;){
+				// for(;;){
 					
-					overworld.Run();
+				// 	overworld.Run();
 					
-					if(true == overworld.terminate){
-						break;
-					}
-					// FsSleep(10);
-				}
+				// 	if(true == overworld.terminate){
+				// 		break;
+				// 	}
+				// 	// FsSleep(10);
+				// }
 				
 				//Mini Game 2
 				printf("Galaga Mini Game");
@@ -419,6 +420,7 @@ int main(void)
 					galaga.Run();
 					
 					if(true == galaga.terminate){
+						level = 3;
 						break;
 					}
 					FsSleep(10);
@@ -431,19 +433,19 @@ int main(void)
 			h3 = 1;
 			if (lb)
 			{
-				//Go to overworld first
-				GameData overworld;
-				overworld.Initialize();
+				// //Go to overworld first
+				// GameData overworld;
+				// overworld.Initialize();
 				
-				for(;;){
+				// for(;;){
 					
-					overworld.Run();
+				// 	overworld.Run();
 					
-					if(true == overworld.terminate){
-						break;
-					}
-					// FsSleep(10);
-				}
+				// 	if(true == overworld.terminate){
+				// 		break;
+				// 	}
+				// 	// FsSleep(10);
+				// }
 				
 				//Mini Game 3
 				printf("Rockets Mini Game");
@@ -467,19 +469,19 @@ int main(void)
 			h4 = 1;
 			if (lb)
 			{
-				//Go to overworld first
-				GameData overworld;
-				overworld.Initialize();
+				// //Go to overworld first
+				// GameData overworld;
+				// overworld.Initialize();
 				
-				for(;;){
+				// for(;;){
 					
-					overworld.Run();
+				// 	overworld.Run();
 					
-					if(true == overworld.terminate){
-						break;
-					}
-					// FsSleep(10);
-				}
+				// 	if(true == overworld.terminate){
+				// 		break;
+				// 	}
+				// 	// FsSleep(10);
+				// }
 				
 				//Mini Game 4
 				printf("Rover Mini Game");
@@ -500,7 +502,6 @@ int main(void)
 		}
 		else if (mx >= px6 && mx <= px6 + 125 && my >= py6 - 144 && my <= py6)
 		{
-			h4 = 1;
 			if (lb)
 			{
 				//Overworld
@@ -515,7 +516,7 @@ int main(void)
 					if(true == overworld.terminate){
 						break;
 					}
-					// FsSleep(10);
+					FsSleep(500);
 				}
 				
 			}

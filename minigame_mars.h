@@ -17,10 +17,11 @@ public:
   	TextString inputStr;
 
     std::string wordBank[5] = {"cow", "apple", "space", "rover", "astronauts"};
+	int wordCount;
 
 	// player variables
 	double angle;
-	int rover, start_x, start_y, wordCount; 
+	int rover, start_x, start_y; 
 	double rover_x, rover_y;
 	double vel, vel_x, vel_y, dt;
 
@@ -29,13 +30,14 @@ public:
 	int speed, height;
 	int seed[20]; // empty array of 20 values 
 	int index;
+	int initiate_jump;
     bool term = false;
 
 	void Initialize(void);
 	void drawBackground();
 	void drawForeground();
 	void drawRover(void);
-	void drawObstacles(void);
+	void drawObstacles(char str[]);
 	void moveObstacle1(void);
 	void moveObstacle2(void);
 	void jumpRover(void); 

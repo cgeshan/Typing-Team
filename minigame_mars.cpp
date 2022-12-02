@@ -28,7 +28,7 @@ void Mars::Initialize(void)
 	start_x = 100, start_y = 430; // starting position of rover and where to return after jump
 	rover_x = start_x;
 	rover_y = start_y;
-	vel = 250; // initial velocity of rover 
+	vel = 300; // initial velocity of rover 
 	vel_x = vel * sin(angle);
 	vel_y = -1 * vel * cos(angle);
 	dt = 0.1; 
@@ -41,6 +41,7 @@ void Mars::Initialize(void)
 	y2 = 435 + (tan(angle) * x1); // y=b+mx based on angle of the mountain
 	speed = 5; 
 	height = 130;
+	initiate_jump = 0; // 0: Enter has not been selected or word typed incorrectly 1: jump initiated, waiting to jump till obstacle is close enough
 
 	// image data
 	png[0].Decode("mars_background.png");	png[0].Flip();
@@ -101,7 +102,7 @@ void Mars::drawRover()
 	glDisable(GL_BLEND);
 }
 
-void Mars::drawObstacles()
+void Mars::drawObstacles(char str[])
 {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -112,6 +113,16 @@ void Mars::drawObstacles()
 	glDrawPixels(png[3].wid, png[3].hei, GL_RGBA, GL_UNSIGNED_BYTE, png[3].rgba);
 
 	glDisable(GL_BLEND);
+	// text on rocks
+	glColor3ub(255, 255, 255);
+	glRasterPos2d(x1 + 50, y1 - 50);
+	YsGlDrawFontBitmap20x32(str);
+	glFlush();
+
+	glColor3ub(255, 255, 255);
+	glRasterPos2d(x2 + 50, y2 - 50);
+	YsGlDrawFontBitmap20x32(str);
+	glFlush();
 }
 
 void Mars::moveObstacle1()
@@ -192,22 +203,25 @@ void Mars::RunOneStep(void){
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	drawBackground();
-	drawForeground();
-	drawRover(); 
-	drawObstacles(); 
-	moveObstacle1();
-	moveObstacle2();
-
 	std::string targetWord = wordBank[wordCount];
 	auto len = targetWord.size();
-	char letters[len+1];
+	char letters[256];
 	strcpy(letters, targetWord.c_str()); 
 
 	inputStr = textInput.str.GetPointer();
 
 	textInput.RunOneStep(key,c);
-	drawTargetWord(letters);
+	
+
+	drawBackground();
+	drawForeground();
+	drawRover(); 
+	moveObstacle1();
+	moveObstacle2();
+
+	drawObstacles(letters); 
+
+	glColor3ub(236, 157, 117);
 	textInput.Draw();
 
 	// initialize time variables 
@@ -222,11 +236,12 @@ void Mars::RunOneStep(void){
 	if(FSKEY_ENTER == key){
 
 		if(inputStr.GetPointer() == targetWord && rover == 0){
-			wordCount++;
+			
 
-			vel_x = vel * sin(angle);
-			vel_y = -1 * vel * cos(angle);
-			rover = 1;
+			// vel_x = vel * sin(angle);
+			// vel_y = -1 * vel * cos(angle);
+			// rover = 1;
+			initiate_jump = 1; 
 
 			auto completeTime = FsPassedTime();
 			std::cout << "Completion time: " << completeTime*0.001 << " seconds." << std::endl;
@@ -234,6 +249,19 @@ void Mars::RunOneStep(void){
 		}
 		textInput.str.CleanUp();
 		inputStr.CleanUp();
+	}
+	
+
+	if (initiate_jump == 1) // jump initiated meaning word was typed correctly and user selected 'Enter' 
+	{
+		if ((x1 - rover_x < 80) || (x2 - rover_x < 80)) // rover is close enough to an obstacle
+		{
+			vel_x = vel * sin(angle); // initial velocity of jump
+			vel_y = -1 * vel * cos(angle);
+			rover = 1; // set rover to jumping
+			initiate_jump = 0; // return to no jump initiated to wait for next correctly typed word
+			wordCount++;
+		}
 	}
 
 	if (rover == 1) // if rover is jumping
@@ -245,7 +273,7 @@ void Mars::RunOneStep(void){
 	FsSleep(25); // 25 milliseconds
 
 	// check if rover has hit an obstacle
-	if (checkObstacle() == 1)
+	if (checkObstacle() == 1 && initiate_jump == 0)
 	{
 		std::cout << "Collision" << std::endl;
 		time_final = time(NULL); // final time 

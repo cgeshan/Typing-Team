@@ -329,11 +329,10 @@ void RenderRover(void* incoming)
 
 	std::string targetWord = game.wordBank[game.wordCount];
     auto len = targetWord.size();
-    char letters[len+1];
+    char letters[256];
     strcpy(letters, targetWord.c_str());
-	int letterNumber = sizeof(letters);
-
-	game.drawWords(letters, letterNumber);
+	
+	game.drawWords(letters, len);
 
 	game.drawRover2();
 	game.moveRover1();
@@ -365,6 +364,7 @@ void Rover::Run(void){
 		if (FSKEY_ESC == key)
 		{
 			terminate = true;
+			break;
 		}
 
         if(FSKEY_ENTER == key){
@@ -386,6 +386,7 @@ void Rover::Run(void){
         if (r.locationR >= 600)
 			{
 				terminate = true; // Go to Overworld
+				break;
 			}
 
 		FsPushOnPaintEvent();

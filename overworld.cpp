@@ -472,6 +472,8 @@ void RenderOverworld(void* incoming)
 	GameData& game = *(GameData*)incoming;
 	OverworldImageData imgdat;
 
+	
+
 	if (true == game.imgdat.firstRenderingPass)  // Do it only once.
 	{
 		game.imgdat.firstRenderingPass = false; // And, don't do it again.
@@ -539,6 +541,14 @@ void RenderOverworld(void* incoming)
 		break;
 	}
 
+	FsPollDevice();
+	auto key = FsInkey();
+	if (FSKEY_ESC == key)
+	{
+		std::cout << "pressed esc" << std::endl;
+		game.terminate = true;
+	}
+
 	FsSwapBuffers();
 }
 
@@ -585,23 +595,25 @@ void GameData::Run(void){
 
 	for (;;)
 	{	
-		FsPushOnPaintEvent();
 		FsPollDevice();
 		auto key = FsInkey();
+
 		if (FSKEY_ESC == key)
 		{
 			std::cout << "pressed esc" << std::endl;
 			terminate = true;
 			break;
 		}
-
 		if(game.gameState == 4 && game.px >= 650 && game.py >= 400){
 			std::cout << "At portal, now leaving overworld." << std::endl;
 			terminate = true;
 			break;
 		}
 		
+		FsPushOnPaintEvent();
 		FsSleep(15);
 	}
+
+	
 }
 

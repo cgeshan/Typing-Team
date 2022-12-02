@@ -123,7 +123,7 @@ void Rockets::RunOneStep(void){
 
 	std::string targetWord = wordBank[wordCount];
 	auto len = targetWord.size();
-	char letters[len+1];
+	char letters[256];
 	strcpy(letters, targetWord.c_str()); 
 
 	inputStr = textInput.str.GetPointer();

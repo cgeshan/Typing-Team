@@ -219,17 +219,21 @@ void RenderGalaga(void* incoming)
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
 	//setup
+	std::string targetWord = game.wordBank[game.wordCount];
+    auto len = targetWord.size();
+    char letters[256];
+    strcpy(letters, targetWord.c_str());
+    
 	game.drawBackground();
 	game.drawPlayer();
+	game.drawWords(letters, len);
 	game.drawEnemy();
+	if(game.wordState == 0){
+		game.shootEnemy();
+	}
+	
 
-    std::string targetWord = game.wordBank[game.wordCount];
-    auto len = targetWord.size();
-    char letters[len+1];
-    strcpy(letters, targetWord.c_str());
-	int letterNumber = sizeof(letters);
     
-	game.drawWords(letters, letterNumber);
 
 	FsSwapBuffers();
 }
@@ -266,9 +270,12 @@ void Galaga::Run(void){
 
             if (inputStr.GetPointer() == targetWord) 
             {
-                g.wordCount++;
+				g.wordState = 0;
+				g.enemyState = 0;
+				g.wordCount++;
                 auto completeTime = FsPassedTime();
                 std::cout << "Completion time: " << completeTime*0.001 << " seconds." << std::endl;
+				g.wordState = 2;
             }
             if(g.wordCount >= sizeof(g.wordBank)/sizeof(g.wordBank[0])){
                 terminate = true;
