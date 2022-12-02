@@ -5,13 +5,6 @@
 #include "fssimplewindow.h"
 #include "yspng.h"
 
-/*
-Pictures:
-0: BG, 1: Idle, 2: WalkA, 3: WalkB, 4:Jump
-
-Think I need to draw a minigame "Portal"
-*/
-
 GLuint texId[10];
 
 class ImageData
@@ -47,9 +40,12 @@ public:
 	void Gravity();
 	double px = 0;
 	double py = 0;
-	double vy = 20;
+	double vy = 0;
 	int facestate = 1;
 	int jumpstate = 0;
+	int jumpdrawingstate = 0;
+	int platstate = 0;
+	//1, 2,3
 	int walktimer = 0;
 
 	//Minigame Door Spawn
@@ -140,9 +136,27 @@ void GameData::ResetScreen()
 		gameState = 1;
 	}
 
-	if (screencount == 2)
+	if (screencount == 2 && gameState != 3)
 	{
+		screencount = 3;
+		alphacount = 0;
 		gameState = 3;
+	}
+
+	if (gameState == 3)
+	{
+		px = 0;
+		py = 400;
+		alphacount -= 10;
+		DrawFadeOut(alphacount);
+	}
+
+	if (alphacount <= -250 && gameState == 3)
+	{
+		px = 0;
+		py = 400;
+		alphacount = 0;
+		gameState = 4;
 	}
 }
 void GameData::DrawPlatforms()
@@ -171,53 +185,82 @@ void GameData::DrawPlatforms()
 
 	glEnd();
 
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_BLEND);
 
-	//glDisable(GL_TEXTURE_2D);
-	//glDisable(GL_BLEND);
+	glColor4d(1.0, 1.0, 1.0, 1.0);
 
-	//glColor4d(1.0, 1.0, 1.0, 1.0);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	//glEnable(GL_BLEND);
-	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, texId[6]);
 
-	//glEnable(GL_TEXTURE_2D);
-	//glBindTexture(GL_TEXTURE_2D, texId[6]);
+	glBegin(GL_QUADS);
 
-	//glBegin(GL_QUADS);
+	glTexCoord2d(0.0, 0.0);
+	glVertex2i(0 + platx2, 0 + platy2);
 
-	//glTexCoord2d(0.0, 0.0);
-	//glVertex2i(0 + platx2, 0 + platy2);
+	glTexCoord2d(0.0, 1.0);
+	glVertex2i(0 + platx2, 120 + platy2);
 
-	//glTexCoord2d(0.0, 1.0);
-	//glVertex2i(0 + platx2, 120 + platy2);
+	glTexCoord2d(1.0, 1.0);
+	glVertex2i(260 + platx2, 120 + platy2);
 
-	//glTexCoord2d(1.0, 1.0);
-	//glVertex2i(260 + platx2, 120 + platy2);
+	glTexCoord2d(1.0, 0.0);
+	glVertex2i(260 + platx2, 0 + platy2);
 
-	//glTexCoord2d(1.0, 0.0);
-	//glVertex2i(260 + platx2, 0 + platy2);
+	glEnd();
 
-	//glEnd();
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_BLEND);
 
-	//glDisable(GL_TEXTURE_2D);
-	//glDisable(GL_BLEND);
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_BLEND);
+
+	glColor4d(1.0, 1.0, 1.0, 1.0);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, texId[7]);
+
+	glBegin(GL_QUADS);
+
+	glTexCoord2d(0.0, 0.0);
+	glVertex2i(0 + platx3, 0 + platy3);
+
+	glTexCoord2d(0.0, 1.0);
+	glVertex2i(0 + platx3, 120 + platy3);
+
+	glTexCoord2d(1.0, 1.0);
+	glVertex2i(260 + platx3, 120 + platy3);
+
+	glTexCoord2d(1.0, 0.0);
+	glVertex2i(260 + platx3, 0 + platy3);
+
+	glEnd();
+
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_BLEND);
 }
 void GameData::GeneratePlatforms()
 {
-	platx1 = rand() % 800;
-	//platx2 = rand() % 800;
-	//platx3 = rand() % 800;
+	platx1 = rand() % 600 + 100;
+	platx2 = rand() % 600 + 100;
+	platx3 = rand() % 600 + 100;
 
-	platy1 = rand() % 400 + 100;
-	//platy2 = rand() % 400;
-	//platy3 = rand() % 400;
+	platy1 = rand() % 100 + 300;
+	platy2 = rand() % 100 + 200;
+	platy3 = rand() % 100 + 100;
 }
 
 //Player
 void GameData::DrawPlayer(void)
 {
 	//Left and Right
-	if((FsGetKeyState(FSKEY_RIGHT) || FsGetKeyState(FSKEY_LEFT)) && jumpstate == 0)
+	if((FsGetKeyState(FSKEY_RIGHT) || FsGetKeyState(FSKEY_LEFT)) && jumpdrawingstate == 0)
 	{
 		glColor4d(1.0, 1.0, 1.0, 1.0);
 
@@ -275,7 +318,7 @@ void GameData::DrawPlayer(void)
 	}
 
 	//Jump
-	else if (jumpstate == 1)
+	else if (jumpdrawingstate == 1)
 	{
 		glColor4d(1.0, 1.0, 1.0, 1.0);
 
@@ -393,24 +436,22 @@ void GameData::MovePlayer()
 		}
 		px -= 5;
 	}
-	if (FsInkey() == FSKEY_UP && py > -140)
+	if (FsInkey() == FSKEY_UP && py > -140 && vy == 0)
 	{
-		walktimer = 0;
+		vy = 20;
 		jumpstate = 1;
+		jumpdrawingstate = 1;
 	}
-
 	//jump
 	if (jumpstate == 1)
 	{
-		walktimer = 0;
 		Gravity();
 	}
+
 	if (px >= 800 && gameState == 1)
 	{
 		gameState = 2;
 	}
-
-	//check collision
 	CheckCollision();
 }
 
@@ -419,19 +460,33 @@ void GameData::Gravity()
 {
 	py -= vy;
 	vy -= 0.1 * 9.81;
-
-	if (py >= 399)
-	{
-		py = 400;
-		vy = 20;
-		jumpstate = 0;
-	}
 }
 void GameData::CheckCollision()
 {
-	if ((px > platx1 - 100 && px < platx1 + 200 ) && (py < platy1 - 120 && py > platy1 - 125))
+	if (((px > platx1 - 80 && px < platx1 + 220) && (py < platy1 - 110 && py > platy1 - 130)) && vy < 0)
 	{
 		vy = 0;
+		jumpdrawingstate = 0;
+	}
+
+	if (((px > platx2 - 80 && px < platx2 + 220) && (py < platy2 - 110 && py > platy2 - 130)) && vy < 0)
+	{
+		vy = 0;
+		jumpdrawingstate = 0;
+	}
+
+	if (((px > platx3 - 80 && px < platx3 + 220) && (py < platy3 - 110 && py > platy3 - 130)) && vy < 0)
+	{
+		vy = 0;
+		jumpdrawingstate = 0;
+	}
+
+	else if (py > 400)
+	{
+		vy = 0;
+		jumpstate = 0;
+		py = 400;
+		jumpdrawingstate = 0;
 	}
 }
 
@@ -444,7 +499,7 @@ void GameData::DrawPortal()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, texId[7]);
+	glBindTexture(GL_TEXTURE_2D, texId[8]);
 
 	glBegin(GL_QUADS);
 
@@ -452,13 +507,13 @@ void GameData::DrawPortal()
 	glVertex2i(0 + 700, 0 + 400);
 
 	glTexCoord2d(0.0, 1.0);
-	glVertex2i(0 + 700, imgdat.png[7].hei + 400);
+	glVertex2i(0 + 700, imgdat.png[8].hei + 400);
 
 	glTexCoord2d(1.0, 1.0);
-	glVertex2i(imgdat.png[7].wid + 700, imgdat.png[7].hei + 400);
+	glVertex2i(imgdat.png[8].wid + 700, imgdat.png[8].hei + 400);
 
 	glTexCoord2d(1.0, 0.0);
-	glVertex2i(imgdat.png[7].wid + 700, 0 + 400);
+	glVertex2i(imgdat.png[8].wid + 700, 0 + 400);
 
 	glEnd();
 
@@ -466,6 +521,7 @@ void GameData::DrawPortal()
 	glDisable(GL_BLEND);
 }
 
+//Render
 void Render(void* incoming)
 {
 	GameData& game = *(GameData*)incoming;
@@ -508,8 +564,8 @@ void Render(void* incoming)
 	{
 	case 0: //fade in
 		game.DrawPlayer();
-		game.ResetScreen();
 		game.GeneratePlatforms();
+		game.ResetScreen();
 		break;
 
 	case 1: //game play
@@ -519,11 +575,19 @@ void Render(void* incoming)
 		break;
 
 	case 2: //fade out
+		game.DrawPlatforms();
 		game.ResetScreen();
-		//game.DrawPlatforms();
 		break;
 
-	case 3: //spawn minigame
+	case 3: //fade out to last screen + generate portal
+		game.GeneratePlatforms();
+		game.DrawPortal();
+		game.DrawPlayer();
+		game.ResetScreen();
+		break;
+
+	case 4: //spawn minigame
+		game.DrawPlatforms();
 		game.DrawPortal();
 		game.DrawPlayer();
 		game.MovePlayer();
@@ -548,13 +612,14 @@ int main(void)
 
 	//Images
 	game.imgdat.png[0].Decode("BG.png");
-	game.imgdat.png[1].Decode("Idle_Lineart.png");
-	game.imgdat.png[2].Decode("WalkA_Lineart.png");
-	game.imgdat.png[3].Decode("WalkB_Lineart.png");
-	game.imgdat.png[4].Decode("Jump_Lineart.png");
+	game.imgdat.png[1].Decode("Idle.png");
+	game.imgdat.png[2].Decode("WalkA.png");
+	game.imgdat.png[3].Decode("WalkB.png");
+	game.imgdat.png[4].Decode("Jump.png");
 	game.imgdat.png[5].Decode("Platform.png");
 	game.imgdat.png[6].Decode("Platform.png");
-	game.imgdat.png[7].Decode("Portal.png");
+	game.imgdat.png[7].Decode("Platform.png");
+	game.imgdat.png[8].Decode("Portal.png");
 
 	FsOpenWindow(0, 0, 800, 600, 1);
 	FsRegisterOnPaintCallBack(Render, &game);
