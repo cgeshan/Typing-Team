@@ -611,7 +611,7 @@ void GameData::Run(void){
 		}
 		
 		FsPushOnPaintEvent();
-		FsSleep(15);
+		FsSleep(20);
 	}
 
 	

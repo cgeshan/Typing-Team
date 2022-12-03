@@ -312,7 +312,7 @@ void Rover::drawYouLost(){
 		drawBackground();
 
 		glRasterPos2i(62, 62);
-		YsGlDrawFontBitmap16x24("Now returning to the Main Menu");
+		YsGlDrawFontBitmap16x24("Returning to the Main Menu");
 
 		FsSwapBuffers();
 		FsSleep(20);
@@ -339,7 +339,7 @@ void Rover::drawYouWon(){
 		drawBackground();
 
 		glRasterPos2i(62, 62);
-		YsGlDrawFontBitmap16x24("Now returning to the Main Menu");
+		YsGlDrawFontBitmap16x24("Returning to the Main Menu");
 
 		FsSwapBuffers();
 		FsSleep(20);
@@ -354,7 +354,7 @@ void Rover::ReturnToMenu(void){
 		
 		glColor3f(1, 1, 1);
 		glRasterPos2i(82, 112);
-		YsGlDrawFontBitmap16x24("Now returning to the Main Menu");
+		YsGlDrawFontBitmap16x24("Returning to the Main Menu");
 
 		FsSwapBuffers();
 		FsSleep(20);
@@ -410,17 +410,21 @@ void RenderRover(void* incoming)
 	//setup
 	game.drawBackground();
 
-	std::string targetWord = game.wordBank[game.wordCount];
-    auto len = targetWord.size();
-    char letters[256];
-    strcpy(letters, targetWord.c_str());
-	
-	game.drawWords(letters, len);
+	if(game.wordCount < sizeof(game.wordBank)/sizeof(game.wordBank[0])){
+		std::string targetWord = game.wordBank[game.wordCount];
+		auto len = targetWord.size();
+		char letters[256];
+		strcpy(letters, targetWord.c_str());
+		
+		game.drawWords(letters, len);
+	}
 
 	game.drawRover2();
 	game.moveRover1();
 	game.moveForground();
 	game.drawRemainingLives();
+
+	game.textInput.Draw();
 
 	FsSwapBuffers();
 }
@@ -440,9 +444,8 @@ void Rover::Run(void){
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
         textInput.RunOneStep(key,c);
-        // drawTargetWord(letters);
-        textInput.Draw();
-        std::cout << inputStr.GetPointer() << std::endl;
+		r.textInput.RunOneStep(key,c);
+
         std::string targetWord = r.wordBank[r.wordCount];
 
 		if (FSKEY_ESC == key)
@@ -468,6 +471,9 @@ void Rover::Run(void){
             }
             textInput.str.CleanUp();
             inputStr.CleanUp();
+
+			r.textInput.str.CleanUp();
+            r.inputStr.CleanUp();
 	    }
 
 		if(r.numLives == 0){

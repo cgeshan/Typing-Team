@@ -194,7 +194,7 @@ void Rockets::drawYouLost(){
 		drawBackground();
 
 		glRasterPos2i(62, 62);
-		YsGlDrawFontBitmap16x24("Now returning to the Main Menu");
+		YsGlDrawFontBitmap16x24("Returning to the Main Menu");
 
 		FsSwapBuffers();
 		FsSleep(20);
@@ -221,7 +221,7 @@ void Rockets::drawYouWon(){
 		drawBackground();
 
 		glRasterPos2i(62, 62);
-		YsGlDrawFontBitmap16x24("Now returning to the Main Menu");
+		YsGlDrawFontBitmap16x24("Returning to the Main Menu");
 
 		FsSwapBuffers();
 		FsSleep(20);
@@ -236,7 +236,7 @@ void Rockets::ReturnToMenu(void){
 		
 		glColor3ub(236, 157, 117);
 		glRasterPos2i(82, 112);
-		YsGlDrawFontBitmap16x24("Now returning to the Main Menu");
+		YsGlDrawFontBitmap16x24("Returning to the Main Menu");
 
 		FsSwapBuffers();
 		FsSleep(20);

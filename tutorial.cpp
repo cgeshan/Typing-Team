@@ -67,7 +67,7 @@ void Tutorial::ReturnToMenu(void){
 		glDrawPixels(bkgd.wid,bkgd.hei,GL_RGBA,GL_UNSIGNED_BYTE,bkgd.rgba);
 
 		glRasterPos2i(82, 112);
-		YsGlDrawFontBitmap16x24("Now returning to the Main Menu");
+		YsGlDrawFontBitmap16x24("Returning to the Main Menu");
 
 		FsSwapBuffers();
 		FsSleep(10);

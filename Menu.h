@@ -27,6 +27,7 @@ public:
 	void drawLevel2(int, int, bool, bool);
 	void drawLevel3(int, int, bool, bool);
 	void drawLevel4(int, int, bool, bool);
+	void LoadingGame(int level);
 
 };
 

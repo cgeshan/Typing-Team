@@ -303,6 +303,42 @@ void Menu::drawOverworldButton(int posx, int posy)
 	glDisable(GL_BLEND);
 }
 
+void Menu::LoadingGame(int level){
+
+	std::string loadingStr;
+	
+	if (level == 1)
+	{
+		loadingStr = "Loading into Mars mini-game";
+	}
+	else if (level == 2)
+	{
+		loadingStr = "Loading into Galaga mini-game";
+	}
+	else if (level == 3)
+	{
+		loadingStr = "Loading into Rockets mini-game";
+	}
+	else if (level == 4)
+	{
+		loadingStr = "Loading into Rover mini-game";
+	}
+
+	char loadingChar[256];
+	strcpy(loadingChar, loadingStr.c_str()); 
+	for(int i = 0; i < 75; i++){
+		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+
+		drawBackground();
+		
+		glColor3f(1, 1, 1);
+		glRasterPos2i(82, 112);
+		YsGlDrawFontBitmap16x24(loadingChar);
+
+		FsSwapBuffers();
+		FsSleep(20);
+	}
+}
 int main(void)
 {
 	FsChangeToProgramDir();
@@ -362,18 +398,18 @@ int main(void)
 			if (lb)
 			{
 				//Go to overworld first
-				// GameData overworld;
-				// overworld.Initialize();
+				GameData overworld;
+				overworld.Initialize();
 				
-				// for(;;){
+				for(;;){
 					
-				// 	overworld.Run();
+					overworld.Run();
 					
-				// 	if(true == overworld.terminate){
-				// 		break;
-				// 	}
-				// 	// FsSleep(10);
-				// }
+					if(true == overworld.terminate){
+						break;
+					}
+					// FsSleep(10);
+				}
 				
 				//Mini Game 1
 				printf("Mars Mini Game");
@@ -398,18 +434,18 @@ int main(void)
 			if (lb)
 			{
 				// //Go to overworld first
-				// GameData overworld;
-				// overworld.Initialize();
+				GameData overworld;
+				overworld.Initialize();
 				
-				// for(;;){
+				for(;;){
 					
-				// 	overworld.Run();
+					overworld.Run();
 					
-				// 	if(true == overworld.terminate){
-				// 		break;
-				// 	}
-				// 	// FsSleep(10);
-				// }
+					if(true == overworld.terminate){
+						break;
+					}
+					// FsSleep(10);
+				}
 				
 				//Mini Game 2
 				printf("Galaga Mini Game");
@@ -433,19 +469,19 @@ int main(void)
 			if (lb)
 			{
 				// //Go to overworld first
-				// GameData overworld;
-				// overworld.Initialize();
+				GameData overworld;
+				overworld.Initialize();
 				
-				// for(;;){
+				for(;;){
 					
-				// 	overworld.Run();
+					overworld.Run();
 					
-				// 	if(true == overworld.terminate){
-				// 		break;
+					if(true == overworld.terminate){
+						break;
 		
-				// 	}
-				// 	// FsSleep(10);
-				// }
+					}
+					// FsSleep(10);
+				}
 				
 				//Mini Game 3
 				printf("Rockets Mini Game");
@@ -469,18 +505,18 @@ int main(void)
 			if (lb)
 			{
 				// //Go to overworld first
-				// GameData overworld;
-				// overworld.Initialize();
+				GameData overworld;
+				overworld.Initialize();
 				
-				// for(;;){
+				for(;;){
 					
-				// 	overworld.Run();
+					overworld.Run();
 					
-				// 	if(true == overworld.terminate){
-				// 		break;
-				// 	}
-				// 	// FsSleep(10);
-				// }
+					if(true == overworld.terminate){
+						break;
+					}
+					// FsSleep(10);
+				}
 				
 				//Mini Game 4
 				printf("Rover Mini Game");
@@ -514,8 +550,70 @@ int main(void)
 					if(true == overworld.terminate){
 						break;
 					}
-					FsSleep(20);
 				}
+				menu.LoadingGame(level);
+				//Go to whatever highest available game is. Pick up where you left off
+					if (level == 1)
+					{
+						Mars mars;
+						mars.Initialize();
+						
+						for(;;){
+							
+							mars.RunOneStep();
+							
+							if(true == mars.term){
+								break;
+							}
+							FsSleep(20);
+						}
+					}
+					else if (level == 2)
+					{
+						Galaga galaga;
+						galaga.Initialize();
+						
+						for(;;){
+							
+							galaga.Run();
+							
+							if(true == galaga.terminate){
+								break;
+							}
+							FsSleep(20);
+						}
+					}
+					else if (level == 3)
+					{
+						Rockets rockets;
+						rockets.Initialize();
+						
+						for(;;){
+							
+							rockets.RunOneStep();
+							
+							if(true == rockets.terminate){
+								break;
+							}
+							FsSleep(20);
+						}
+					}
+					else if (level == 4)
+					{
+						Rover rover;
+						rover.Initialize();
+						
+						for(;;){
+							
+							rover.Run();
+							
+							if(true == rover.terminate){
+								break;
+							}
+							FsSleep(20);
+						}
+					}
+
 			}
 		}
 		else if (mx >= px5 && mx <= px5 + 100 && my >= py5 - 100 && my <= py5)

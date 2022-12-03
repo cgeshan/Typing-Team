@@ -1,9 +1,4 @@
 #include "Galaga.h"
-#include "textinput.h"
-
-/*
-added txtinput.h
-*/
 
 GLuint GalagaTextureId[10];
 
@@ -56,21 +51,17 @@ void Galaga::drawPlayer()
 
 	glBegin(GL_QUADS);
 
-	//wid = 150
-	//descale wid = 
-	//descale hei = 450
-
 	glTexCoord2d(0.0, 0.0);
-	glVertex2i(322, 450);
+	glVertex2i(300, 450);
 
 	glTexCoord2d(0.0, 1.0);
-	glVertex2i(322, imgdat.png[0].hei + 450 - 50);
+	glVertex2i(300, imgdat.png[0].hei + 400);
 
 	glTexCoord2d(1.0, 1.0);
-	glVertex2i(278 + imgdat.png[0].wid, imgdat.png[0].hei + 450 - 50);
+	glVertex2i(imgdat.png[0].wid + 300, imgdat.png[0].hei + 400);
 
 	glTexCoord2d(1.0, 0.0);
-	glVertex2i(278 + imgdat.png[0].wid , 450);
+	glVertex2i(imgdat.png[0].wid + 300, 450);
 
 	glEnd();
 
@@ -168,7 +159,7 @@ void Galaga::shootEnemy()
 {
 	if (wordState == 0)
 	{
-		laserX = 375;
+		laserX = 400;
 		laserY = 500;
 	}
 
@@ -221,7 +212,7 @@ void Galaga::drawYouLost(){
 		drawBackground();
 
 		glRasterPos2i(62, 62);
-		YsGlDrawFontBitmap16x24("Now returning to the Main Menu");
+		YsGlDrawFontBitmap16x24("Returning to the Main Menu");
 
 		FsSwapBuffers();
 		FsSleep(20);
@@ -248,7 +239,7 @@ void Galaga::drawYouWon(){
 		drawBackground();
 
 		glRasterPos2i(62, 62);
-		YsGlDrawFontBitmap16x24("Now returning to the Main Menu");
+		YsGlDrawFontBitmap16x24("Returning to the Main Menu");
 
 		FsSwapBuffers();
 		FsSleep(20);
@@ -263,7 +254,7 @@ void Galaga::ReturnToMenu(void){
 		
 		glColor3f(1, 1, 1);
 		glRasterPos2i(82, 112);
-		YsGlDrawFontBitmap16x24("Now returning to the Main Menu");
+		YsGlDrawFontBitmap16x24("Returning to the Main Menu");
 
 		FsSwapBuffers();
 		FsSleep(20);
@@ -330,14 +321,6 @@ void RenderGalaga(void* incoming)
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
 	//setup
-
-	// std::cout << game.wordState << std::endl;
-	if (game.wordState == 0) {
-		game.shootEnemy();
-		// std::cout << "Shots fired!" << std::endl;
-
-	}
-
 	if(game.wordCount < sizeof(game.wordBank)/sizeof(game.wordBank[0])){
 		std::string targetWord = game.wordBank[game.wordCount];
 		auto len = targetWord.size();
@@ -350,11 +333,13 @@ void RenderGalaga(void* incoming)
 		game.drawEnemy();
 		game.drawRemainingLives();
 
-		// game.drawInput(game.textInput, game.inputStr);
-		
-		//to draw on window changes:
 		game.textInput.Draw();
 		
+	}
+
+	if(game.wordState == 0){
+		game.shootEnemy();
+
 	}
 
 	FsSwapBuffers();
@@ -362,12 +347,9 @@ void RenderGalaga(void* incoming)
 
 void Galaga::Run(void){
     Galaga g;
-
     g.Initialize();
-
     FsRegisterOnPaintCallBack(RenderGalaga, &g);
-
-    	
+	
 	for (;;)
 	{
 		FsPollDevice();
@@ -378,10 +360,7 @@ void Galaga::Run(void){
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
         textInput.RunOneStep(key,c);
-		g.textInput.RunOneStep(key, c);
-
-        // textInput.Draw();
-        // std::cout << inputStr.GetPointer() << std::endl;
+		g.textInput.RunOneStep(key,c);
 
 		if (FSKEY_ESC == key)
 		{
@@ -426,12 +405,11 @@ void Galaga::Run(void){
             // }
             textInput.str.CleanUp();
             inputStr.CleanUp();
-
 			g.textInput.str.CleanUp();
-			g.inputStr.CleanUp();
+            g.inputStr.CleanUp();
 			// g.wordState = 2;
 	    }
 		FsPushOnPaintEvent();
-		FsSleep(25);
+		// FsSleep(25);
 	}
 }
