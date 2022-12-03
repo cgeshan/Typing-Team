@@ -1,7 +1,7 @@
 /* ////////////////////////////////////////////////////////////
 
 File Name: yspng.cpp
-Copyright (c) 2017 Soji Yamakawa.  All rights reserved.
+Copyright (c) 2015 Soji Yamakawa.  All rights reserved.
 http://www.ysflight.com
 
 Redistribution and use in source and binary forms, with or without modification, 
@@ -70,8 +70,7 @@ unsigned int YsGenericPngDecoder::verboseMode=YSFALSE;
 //     Bug fix: Sliding-window buffer was not populated while processing uncompressed block of data.
 //   2014/06/04
 //     1bit Indexed Color was already supported.  I was forgetting to add in the list below.
-//   2014/12/21
-//     Small improvement in the de-compression efficiency.
+//
 
 /* Supported color and depth
 
@@ -236,7 +235,7 @@ size_t YsPngBinaryFileStream::GetSize(void) const
 	size_t curPos=ftell(fp);
     fseek(fp,0,2 /* SEEK_END */);
     size_t fsize=ftell(fp);
-    fseek(fp,(long)curPos,0 /* SEEK_SET */);
+    fseek(fp,curPos,0 /* SEEK_SET */);
     return fsize;
 }
 
@@ -347,8 +346,8 @@ int YsPngHuffmanTree::leakTracker=0;
 
 YsPngHuffmanTree::YsPngHuffmanTree()
 {
-	zeroOne[0]=NULL;
-	zeroOne[1]=NULL;
+	zero=NULL;
+	one=NULL;
 	dat=0x7fffffff;
 	weight=0;
 	depth=1;
@@ -364,8 +363,8 @@ void YsPngHuffmanTree::DeleteHuffmanTree(YsPngHuffmanTree *node)
 {
 	if(node!=NULL)
 	{
-		DeleteHuffmanTree(node->Zero());
-		DeleteHuffmanTree(node->One());
+		DeleteHuffmanTree(node->zero);
+		DeleteHuffmanTree(node->one);
 		delete node;
 	}
 }
@@ -529,8 +528,15 @@ int YsPngUncompressor::DecodeDynamicHuffmanCode
 	lengthTreePtr=lengthTree;
 	while(nExtr<hLit+257+hDist+1)
 	{
-		lengthTreePtr=lengthTreePtr->Traverse(GetNextBit(dat,bytePtr,bitPtr));
-		if(lengthTreePtr->Zero()==NULL && lengthTreePtr->One()==NULL)
+		if(GetNextBit(dat,bytePtr,bitPtr))
+		{
+			lengthTreePtr=lengthTreePtr->one;
+		}
+		else
+		{
+			lengthTreePtr=lengthTreePtr->zero;
+		}
+		if(lengthTreePtr->zero==NULL && lengthTreePtr->one==NULL)
 		{
 			unsigned value,copyLength;
 			value=lengthTreePtr->dat;
@@ -619,19 +625,20 @@ YsPngHuffmanTree *YsPngUncompressor::MakeHuffmanTree(unsigned n,unsigned hLength
 			{
 				if(hCode[i]&mask)
 				{
-					if(ptr->One()==NULL)
+					if(ptr->one==NULL)
 					{
-						ptr->One()=new YsPngHuffmanTree;
+						ptr->one=new YsPngHuffmanTree;
 					}
-					ptr=ptr->One();
+					ptr=ptr->one;
 				}
 				else
 				{
-					if(ptr->Zero()==NULL)
+					if(ptr->zero==NULL)
 					{
-						ptr->Zero()=new YsPngHuffmanTree;
+
+						ptr->zero=new YsPngHuffmanTree;
 					}
-					ptr=ptr->Zero();
+					ptr=ptr->zero;
 				}
 				mask>>=1;
 			}
@@ -855,7 +862,14 @@ int YsPngUncompressor::Uncompress(unsigned length,unsigned char dat[])
 			{
 				for(;;)
 				{
-					codeTreePtr=codeTreePtr->Traverse(GetNextBit(dat,bytePtr,bitPtr));
+					if(GetNextBit(dat,bytePtr,bitPtr))
+					{
+						codeTreePtr=codeTreePtr->one;
+					}
+					else
+					{
+						codeTreePtr=codeTreePtr->zero;
+					}
 
 					if(codeTreePtr==NULL)
 					{
@@ -863,7 +877,7 @@ int YsPngUncompressor::Uncompress(unsigned length,unsigned char dat[])
 						goto ERREND;
 					}
 
-					if(codeTreePtr->Zero()==NULL && codeTreePtr->One()==NULL)
+					if(codeTreePtr->zero==NULL && codeTreePtr->one==NULL)
 					{
 						// printf("[%d]\n",codeTreePtr->dat);
 
@@ -900,9 +914,16 @@ int YsPngUncompressor::Uncompress(unsigned length,unsigned char dat[])
 							else
 							{
 								distTreePtr=distTree;
-								while(distTreePtr->Zero()!=NULL || distTreePtr->One()!=NULL)
+								while(distTreePtr->zero!=NULL || distTreePtr->one!=NULL)
 								{
-									distTreePtr=distTreePtr->Traverse(GetNextBit(dat,bytePtr,bitPtr));
+									if(GetNextBit(dat,bytePtr,bitPtr))
+									{
+										distTreePtr=distTreePtr->one;
+									}
+									else
+									{
+										distTreePtr=distTreePtr->zero;
+									}
 								}
 								distCode=distTreePtr->dat;
 							}
