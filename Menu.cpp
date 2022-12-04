@@ -47,6 +47,10 @@ int GetData(void)
 			}
 			//printf("level %d", level);
 		}
+		else
+		{
+			level = 0;
+		}
 	}
 	
 	else
@@ -55,13 +59,20 @@ int GetData(void)
 	}
 	return level;
 }
+void writetofile(int lvl, int points)
+{
+	FILE* File;
+	File = fopen("game.txt", "w+");
+	fprintf(File, "%i  %i", lvl, points);
+	fclose(File);
+}
 void ResetGame(bool&l1,bool&l2,bool&l3,bool&l4)
 {
 	l1 = 0;
 	l2 = 0;
 	l3 = 0;
 	l4 = 0;
-
+	writetofile(0, 0);
 	//Overwrites the save file with value zero 
 	//Modifies l1,l2,l3,l4 to be false so the option to play those levels goes away
 }
