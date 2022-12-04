@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
+#include "yssimplesound.h"
 #include "fssimplewindow.h"
 #include "yspng.h"
 
@@ -22,6 +23,9 @@ class GameData
 {
 public:
 	OverworldImageData imgdat;
+
+	YsSoundPlayer player;
+	YsSoundPlayer::SoundData wav;
 
 	//Reset
 	void ResetScreen();
@@ -64,6 +68,9 @@ public:
 	void PointCount();
 	void DrawPointCount();
 	int points;
+
+	//Music
+	int playMusic();
 
 	//GameState
 	int gameState;

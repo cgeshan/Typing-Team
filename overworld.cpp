@@ -3,6 +3,24 @@
 
 GLuint OverworldTextureId[12];
 
+//Point Call (wip)
+void GetData()
+{
+	int level;
+	FILE* fp = fopen("game.txt", "r");
+	if (nullptr != fp)
+	{
+		char newpoints[256];
+		int lineNum = 1;
+		while (nullptr != fgets(newpoints, 255, fp))
+		{
+			newpoints[255] = 0;
+			lineNum++;
+		}
+		fclose(fp);
+	}
+}
+
 //BG Items
 void GameData::DrawBG()
 {
@@ -117,23 +135,22 @@ void GameData::DrawPlatforms()
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, OverworldTextureId[5]);
+	glBindTexture(GL_TEXTURE_2D, OverworldTextureId[7]);
 
 	glBegin(GL_QUADS);
 
 	glTexCoord2d(0.0, 0.0);
-	glVertex2i(0 + platx1, 0 + platy1);
+	glVertex2i(0 + platx3, 0 + platy3);
 
 	glTexCoord2d(0.0, 1.0);
-	glVertex2i(0 + platx1, 120 + platy1);
+	glVertex2i(0 + platx3, 120 + platy3);
 
 	glTexCoord2d(1.0, 1.0);
-	glVertex2i(260 + platx1, 120 + platy1);
+	glVertex2i(260 + platx3, 120 + platy3);
 
 	glTexCoord2d(1.0, 0.0);
-	glVertex2i(260 + platx1, 0 + platy1);
+	glVertex2i(260 + platx3, 0 + platy3);
 
 	glEnd();
 
@@ -144,7 +161,6 @@ void GameData::DrawPlatforms()
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, OverworldTextureId[6]);
 
@@ -167,30 +183,26 @@ void GameData::DrawPlatforms()
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_BLEND);
 
-	glDisable(GL_TEXTURE_2D);
-	glDisable(GL_BLEND);
-
 	glColor4d(1.0, 1.0, 1.0, 1.0);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, OverworldTextureId[7]);
+	glBindTexture(GL_TEXTURE_2D, OverworldTextureId[5]);
 
 	glBegin(GL_QUADS);
 
 	glTexCoord2d(0.0, 0.0);
-	glVertex2i(0 + platx3, 0 + platy3);
+	glVertex2i(0 + platx1, 0 + platy1);
 
 	glTexCoord2d(0.0, 1.0);
-	glVertex2i(0 + platx3, 120 + platy3);
+	glVertex2i(0 + platx1, 120 + platy1);
 
 	glTexCoord2d(1.0, 1.0);
-	glVertex2i(260 + platx3, 120 + platy3);
+	glVertex2i(260 + platx1, 120 + platy1);
 
 	glTexCoord2d(1.0, 0.0);
-	glVertex2i(260 + platx3, 0 + platy3);
+	glVertex2i(260 + platx1, 0 + platy1);
 
 	glEnd();
 
@@ -361,7 +373,7 @@ void GameData::DrawPointCount()
 void GameData::DrawPlayer(void)
 {
 	//Left and Right
-	if((FsGetKeyState(FSKEY_RIGHT) || FsGetKeyState(FSKEY_LEFT)) && jumpdrawingstate == 0)
+	if((FsGetKeyState(FSKEY_RIGHT) || FsGetKeyState(FSKEY_LEFT)) && jumpdrawingstate == 0 && vy >= 0)
 	{
 		glColor4d(1.0, 1.0, 1.0, 1.0);
 
@@ -419,7 +431,7 @@ void GameData::DrawPlayer(void)
 	}
 
 	//Jump
-	else if (jumpdrawingstate == 1)
+	else if (jumpdrawingstate == 1 || vy < 0)
 	{
 		glColor4d(1.0, 1.0, 1.0, 1.0);
 
@@ -564,19 +576,19 @@ void GameData::Gravity()
 }
 void GameData::CheckCollision()
 {
-	if (((px > platx1 - 80 && px < platx1 + 220) && (py < platy1 - 110 && py > platy1 - 130)) && vy < 0)
+	if (((px > platx1 - 80 && px < platx1 + 220) && (py < platy1 - 80 && py > platy1 - 130)) && vy < 0)
 	{
 		vy = 0;
 		jumpdrawingstate = 0;
 	}
 
-	if (((px > platx2 - 80 && px < platx2 + 220) && (py < platy2 - 110 && py > platy2 - 130)) && vy < 0)
+	if (((px > platx2 - 80 && px < platx2 + 220) && (py < platy2 - 80 && py > platy2 - 130)) && vy < 0)
 	{
 		vy = 0;
 		jumpdrawingstate = 0;
 	}
 
-	if (((px > platx3 - 80 && px < platx3 + 220) && (py < platy3 - 110 && py > platy3 - 130)) && vy < 0)
+	if (((px > platx3 - 80 && px < platx3 + 220) && (py < platy3 - 80 && py > platy3 - 130)) && vy < 0)
 	{
 		vy = 0;
 		jumpdrawingstate = 0;
@@ -620,6 +632,19 @@ void GameData::DrawPortal()
 
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_BLEND);
+}
+
+//Sound
+int GameData::playMusic()
+{
+	if (YSOK != wav.LoadWav("overworld_music.wav"))
+	{
+		printf("failed to load music");
+		return 1;
+	}
+	player.Start();
+	player.PlayOneShot(wav);
+	return 0;
 }
 
 //Render
@@ -757,7 +782,7 @@ void GameData::Run(void){
 	// OverworldImageData imgdat;
 	GameData game;
 	game.Initialize();
-
+	game.playMusic();
 	FsRegisterOnPaintCallBack(RenderOverworld, &game);
 
 	for (;;)
@@ -777,7 +802,6 @@ void GameData::Run(void){
 			terminate = true;
 			break;
 		}
-		
 		FsPushOnPaintEvent();
 		FsSleep(15);
 	}
