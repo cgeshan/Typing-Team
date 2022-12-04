@@ -10,6 +10,8 @@ void Rover::Initialize()
 	locationF1 = 800;
 	locationF2 = 400;
 	locationR = 0;
+	velS = 2;
+	velW = 2;
 	count = 0;
 	numLives = 3;
     terminate = false;
@@ -81,12 +83,7 @@ void Rover::drawBackground()
 }
 
 void Rover::drawWords(char word[], int arraySize)
-{
-	if (wordState == 0)
-	{
-		wordState = 2;
-	}
-	
+{	
 	if (count == 0)
 	{
 		if (arraySize > 4)
@@ -99,51 +96,60 @@ void Rover::drawWords(char word[], int arraySize)
 		}
 		count++;
 	}
-	
+
+	glColor4d(1.0, 1.0, 1.0, 1.0);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, RoverTextureId[1]);
+
+	glBegin(GL_QUADS);
+
+	glTexCoord2d(0.0, 0.0);
+	glVertex2i(locationS, 300);
+
+	glTexCoord2d(0.0, 1.0);
+	glVertex2i(locationS, imgdat.png[1].hei + 200);
+
+	glTexCoord2d(1.0, 1.0);
+	glVertex2i(imgdat.png[1].wid + locationS, imgdat.png[1].hei + 200);
+
+	glTexCoord2d(1.0, 0.0);
+	glVertex2i(imgdat.png[1].wid + locationS, 300);
+
+	glEnd();
+
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_BLEND);
+
+	locationS = locationS - velS;
+
+	if (wordState == 2)
+	{
+		glColor3f(0, 0, 1);
+		glRasterPos3f(locationW, 375, 0.2);
+		YsGlDrawFontBitmap32x48(word);
+		locationW = locationW - velW;
+	}
+
 	if (locationW <= 0)
 	{
 		locationW = 895;
 		locationS = 800;
-		wordState = 0;
 		count = 0;
 		numLives--;
 	}
 
-	if (wordState == 2)
+	if (locationS <= -125 && wordState == 0)
 	{
-		glColor4d(1.0, 1.0, 1.0, 1.0);
-
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, RoverTextureId[1]);
-
-		glBegin(GL_QUADS);
-
-		glTexCoord2d(0.0, 0.0);
-		glVertex2i(locationS, 300);
-
-		glTexCoord2d(0.0, 1.0);
-		glVertex2i(locationS, imgdat.png[1].hei + 200);
-
-		glTexCoord2d(1.0, 1.0);
-		glVertex2i(imgdat.png[1].wid + locationS, imgdat.png[1].hei + 200);
-
-		glTexCoord2d(1.0, 0.0);
-		glVertex2i(imgdat.png[1].wid + locationS, 300);
-
-		glEnd();
-
-		glDisable(GL_TEXTURE_2D);
-		glDisable(GL_BLEND);
-
-		locationS = locationS - 3;
-
-		glColor3f(0, 0, 1);
-		glRasterPos3f(locationW, 375, 0.2);
-		YsGlDrawFontBitmap32x48(word);
-		locationW = locationW - 3;
+		locationW = 895;
+		locationS = 800;
+		wordState = 2;
+		count = 0;
+		velS = velS + 0.5;
+		velW = velW + 0.5;
 	}
 }
 
@@ -446,8 +452,6 @@ void Rover::Run(void){
 
         // drawTargetWord(letters);
         textInput.Draw();
-        std::cout << inputStr.GetPointer() << std::endl;
-        std::string targetWord = r.wordBank[r.wordCount];
 
 		if (FSKEY_ESC == key)
 		{
@@ -456,10 +460,34 @@ void Rover::Run(void){
 			break;
 		}
 
+		if (r.numLives == 0) {
+			drawYouLost();
+			terminate = true;
+			break;
+		}
+
+		if (r.locationR >= 600 || r.wordCount >= sizeof(r.wordBank) / sizeof(r.wordBank[0])) {
+			drawYouWon();
+			terminate = true;
+			break;
+		}
+
+		if (r.locationS <= 0 && changeWords == true) {
+			r.wordCount++;
+			changeWords = false;
+		}
+	
+		std::cout << inputStr.GetPointer() << std::endl;
+		std::cout << sizeof(r.wordBank) << std::endl;
+		std::cout << sizeof(r.wordBank[0]) << std::endl;
+
+		std::string targetWord = r.wordBank[r.wordCount];
+
         if(FSKEY_ENTER == key)
 		{
             if (inputStr.GetPointer() == targetWord) 
             {
+				r.wordState = 0;
 				r.locationR = r.locationR + 60;
 				
 				changeWords = true;
@@ -467,28 +495,13 @@ void Rover::Run(void){
                 auto completeTime = FsPassedTime();
                 std::cout << "Completion time: " << completeTime*0.001 << " seconds." << std::endl;
             }
-            if(r.wordCount >= sizeof(r.wordBank)/sizeof(r.wordBank[0])){
-				drawYouWon();
-                terminate = true;
-                break;
-            }
+            
             textInput.str.CleanUp();
             inputStr.CleanUp();
 
 			r.textInput.str.CleanUp();
 			r.inputStr.CleanUp();
 	    }
-
-		if(r.numLives == 0){
-			drawYouLost();
-			terminate = true;
-			break;
-		}
-
-		if(r.locationS <= 0 && changeWords == true){
-			r.wordCount++;
-			changeWords = false;
-		}
 
 		FsPushOnPaintEvent();
 		FsSleep(25);

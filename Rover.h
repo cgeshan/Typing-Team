@@ -23,7 +23,7 @@ public:
 class Rover
 {
 public:
-	int wordState, locationW, locationS, locationF1, locationF2, locationR, count, numLives, wordCount=0;
+	int wordState, locationW, locationS, locationF1, locationF2, locationR, velS, velW, count, numLives, wordCount=0;
 	bool changeWords = false;
 	RoverImageData imgdat;
 
