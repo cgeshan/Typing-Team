@@ -9,25 +9,51 @@ void Rover::Initialize()
 	locationS = 800;
 	locationF1 = 800;
 	locationF2 = 400;
-	locationR = 100;
+	locationR = 0;
 	count = 0;
 	numLives = 3;
     terminate = false;
 	changeWords = false;
 
     imgdat.firstRenderingPass = true;
-    imgdat.png[0].Decode("BG.png");
+    imgdat.png[0].Decode("RacingBG_moonGround.png");
     imgdat.png[1].Decode("Sign.png");
     imgdat.png[2].Decode("Rock1Gray.png");
     imgdat.png[3].Decode("Rock2Gray.png");
     imgdat.png[4].Decode("EnemyCar.png");
     imgdat.png[5].Decode("PlayerCar.png");
+	imgdat.png[6].Decode("Stars.png");
 }
 
 void Rover::drawBackground()
 {
 	glColor4d(1.0, 1.0, 1.0, 1.0);
 
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, RoverTextureId[6]);
+
+	glBegin(GL_QUADS);
+
+	glTexCoord2d(0.0, 0.0);
+	glVertex2i(0, 0);
+
+	glTexCoord2d(0.0, 1.0);
+	glVertex2i(0, 600);
+
+	glTexCoord2d(1.0, 1.0);
+	glVertex2i(800, 600);
+
+	glTexCoord2d(1.0, 0.0);
+	glVertex2i(800, 0);
+
+	glEnd();
+
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_BLEND);
+	
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -235,26 +261,21 @@ void Rover::moveRover1()
 	glBegin(GL_QUADS);
 
 	glTexCoord2d(0.0, 0.0);
-	glVertex2i(0, 475);
+	glVertex2i(locationR, 475);
 
 	glTexCoord2d(0.0, 1.0);
-	glVertex2i(0, imgdat.png[5].hei + 325);
+	glVertex2i(locationR, imgdat.png[5].hei + 325);
 
 	glTexCoord2d(1.0, 1.0);
-	glVertex2i(imgdat.png[5].wid - 200, imgdat.png[5].hei + 325);
+	glVertex2i(imgdat.png[5].wid - 200 + locationR, imgdat.png[5].hei + 325);
 
 	glTexCoord2d(1.0, 0.0);
-	glVertex2i(imgdat.png[5].wid - 200, 475);
+	glVertex2i(imgdat.png[5].wid - 200 + locationR, 475);
 
 	glEnd();
 
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_BLEND);
-
-	if (wordState == 0)
-	{
-		locationR = locationR + 50;
-	}
 }
 
 void Rover::drawYouLost(){
@@ -435,11 +456,13 @@ void Rover::Run(void){
 			break;
 		}
 
-        if(FSKEY_ENTER == key){
-
+        if(FSKEY_ENTER == key)
+		{
             if (inputStr.GetPointer() == targetWord) 
             {
-                changeWords = true;
+				r.locationR = r.locationR + 60;
+				
+				changeWords = true;
 				// r.wordCount++;
                 auto completeTime = FsPassedTime();
                 std::cout << "Completion time: " << completeTime*0.001 << " seconds." << std::endl;
@@ -466,12 +489,6 @@ void Rover::Run(void){
 			r.wordCount++;
 			changeWords = false;
 		}
-
-        if (r.locationR >= 600)
-			{
-				terminate = true; // Go to Overworld
-				break;
-			}
 
 		FsPushOnPaintEvent();
 		FsSleep(25);
