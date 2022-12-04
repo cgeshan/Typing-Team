@@ -576,19 +576,19 @@ void GameData::Gravity()
 }
 void GameData::CheckCollision()
 {
-	if (((px > platx1 - 80 && px < platx1 + 220) && (py < platy1 - 80 && py > platy1 - 130)) && vy < 0)
+	if (((px > platx1 - 80 && px < platx1 + 220) && (py < platy1 - 100 && py > platy1 - 130)) && vy < 0)
 	{
 		vy = 0;
 		jumpdrawingstate = 0;
 	}
 
-	if (((px > platx2 - 80 && px < platx2 + 220) && (py < platy2 - 80 && py > platy2 - 130)) && vy < 0)
+	if (((px > platx2 - 80 && px < platx2 + 220) && (py < platy2 - 100 && py > platy2 - 130)) && vy < 0)
 	{
 		vy = 0;
 		jumpdrawingstate = 0;
 	}
 
-	if (((px > platx3 - 80 && px < platx3 + 220) && (py < platy3 - 80 && py > platy3 - 130)) && vy < 0)
+	if (((px > platx3 - 80 && px < platx3 + 220) && (py < platy3 - 100 && py > platy3 - 130)) && vy < 0)
 	{
 		vy = 0;
 		jumpdrawingstate = 0;
