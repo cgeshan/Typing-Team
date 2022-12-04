@@ -1,4 +1,9 @@
 #include "Galaga.h"
+#include "textinput.h"
+
+/*
+added txtinput.h
+*/
 
 GLuint GalagaTextureId[10];
 
@@ -25,7 +30,8 @@ void Galaga::drawBackground()
 {
 	glClearColor(0, 0, 0, 0);
 
-	glBegin(GL_POINTS);
+	glBegin(GL_QUADS);
+
 	for (int star = 0; star < 100; star++)
 	{
 		unsigned int starred = rand() % 256;
@@ -34,7 +40,13 @@ void Galaga::drawBackground()
 
 		glColor3ub(starred, stargreen, starblue);
 
-		glVertex2i(rand() % 800, rand() % 600);
+		int x = rand() % 800;
+		int y = rand() % 600;
+
+		glVertex2i(x + 1, y + 1);
+		glVertex2i(x - 1, y + 1);
+		glVertex2i(x - 1, y - 1);
+		glVertex2i(x + 1, y - 1);
 	}
 	glEnd();
 }
@@ -51,17 +63,21 @@ void Galaga::drawPlayer()
 
 	glBegin(GL_QUADS);
 
+	//wid = 150
+	//descale wid = 
+	//descale hei = 450
+
 	glTexCoord2d(0.0, 0.0);
-	glVertex2i(300, 450);
+	glVertex2i(322, 450);
 
 	glTexCoord2d(0.0, 1.0);
-	glVertex2i(300, imgdat.png[0].hei + 400);
+	glVertex2i(322, imgdat.png[0].hei + 450 - 50);
 
 	glTexCoord2d(1.0, 1.0);
-	glVertex2i(imgdat.png[0].wid + 300, imgdat.png[0].hei + 400);
+	glVertex2i(278 + imgdat.png[0].wid, imgdat.png[0].hei + 450 - 50);
 
 	glTexCoord2d(1.0, 0.0);
-	glVertex2i(imgdat.png[0].wid + 300, 450);
+	glVertex2i(278 + imgdat.png[0].wid , 450);
 
 	glEnd();
 
@@ -98,11 +114,6 @@ void Galaga::drawWords(char word[], int arraySize)
 	{
 		locationW = 0.0;
 	}
-
-	// if (wordState == 0)
-	// {
-	// 	wordState = 2;
-	// }
 }
 
 void Galaga::drawEnemy()
@@ -159,7 +170,7 @@ void Galaga::shootEnemy()
 {
 	if (wordState == 0)
 	{
-		laserX = 400;
+		laserX = 375;
 		laserY = 500;
 	}
 
@@ -174,21 +185,14 @@ void Galaga::shootEnemy()
 	numHit++;
 	wordState = 2;
 
-
-	// glEnable(GL_BLEND);
-	// glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	// glDisable(GL_BLEND);
-
-	
+	velE = velE + 0.25;
+	velW = velW + 0.25;
 
 	if (laserY < locationE)
 	{
 		enemyState = 0;
 		laserX = -1000;
 		laserY = -1000;
-		// numHit++;
-		// wordState = 2;
 	}
 }
 
@@ -212,7 +216,7 @@ void Galaga::drawYouLost(){
 		drawBackground();
 
 		glRasterPos2i(62, 62);
-		YsGlDrawFontBitmap16x24("Returning to the Main Menu");
+		YsGlDrawFontBitmap16x24("Now returning to the Main Menu");
 
 		FsSwapBuffers();
 		FsSleep(20);
@@ -239,7 +243,7 @@ void Galaga::drawYouWon(){
 		drawBackground();
 
 		glRasterPos2i(62, 62);
-		YsGlDrawFontBitmap16x24("Returning to the Main Menu");
+		YsGlDrawFontBitmap16x24("Now returning to the Main Menu");
 
 		FsSwapBuffers();
 		FsSleep(20);
@@ -254,7 +258,7 @@ void Galaga::ReturnToMenu(void){
 		
 		glColor3f(1, 1, 1);
 		glRasterPos2i(82, 112);
-		YsGlDrawFontBitmap16x24("Returning to the Main Menu");
+		YsGlDrawFontBitmap16x24("Now returning to the Main Menu");
 
 		FsSwapBuffers();
 		FsSleep(20);
@@ -321,6 +325,14 @@ void RenderGalaga(void* incoming)
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
 	//setup
+
+	// std::cout << game.wordState << std::endl;
+	if (game.wordState == 0) {
+		game.shootEnemy();
+		// std::cout << "Shots fired!" << std::endl;
+
+	}
+
 	if(game.wordCount < sizeof(game.wordBank)/sizeof(game.wordBank[0])){
 		std::string targetWord = game.wordBank[game.wordCount];
 		auto len = targetWord.size();
@@ -333,13 +345,11 @@ void RenderGalaga(void* incoming)
 		game.drawEnemy();
 		game.drawRemainingLives();
 
+		//game.drawInput(game.textInput, game.inputStr);
+		
+		//to draw on window changes:
 		game.textInput.Draw();
 		
-	}
-
-	if(game.wordState == 0){
-		game.shootEnemy();
-
 	}
 
 	FsSwapBuffers();
@@ -347,9 +357,12 @@ void RenderGalaga(void* incoming)
 
 void Galaga::Run(void){
     Galaga g;
+
     g.Initialize();
+
     FsRegisterOnPaintCallBack(RenderGalaga, &g);
-	
+
+    	
 	for (;;)
 	{
 		FsPollDevice();
@@ -360,7 +373,10 @@ void Galaga::Run(void){
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
         textInput.RunOneStep(key,c);
-		g.textInput.RunOneStep(key,c);
+		g.textInput.RunOneStep(key, c);
+
+        // textInput.Draw();
+        // std::cout << inputStr.GetPointer() << std::endl;
 
 		if (FSKEY_ESC == key)
 		{
@@ -405,11 +421,12 @@ void Galaga::Run(void){
             // }
             textInput.str.CleanUp();
             inputStr.CleanUp();
+
 			g.textInput.str.CleanUp();
-            g.inputStr.CleanUp();
+			g.inputStr.CleanUp();
 			// g.wordState = 2;
 	    }
 		FsPushOnPaintEvent();
-		// FsSleep(25);
+		FsSleep(25);
 	}
 }

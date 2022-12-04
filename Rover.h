@@ -46,6 +46,7 @@ public:
 	void drawYouWon();
 	void drawRemainingLives();
 	void ReturnToMenu();
+	void drawInput(TextInput in, TextString str);
 
 };
 

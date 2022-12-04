@@ -18,8 +18,8 @@ void Rover::Initialize()
     imgdat.firstRenderingPass = true;
     imgdat.png[0].Decode("BG.png");
     imgdat.png[1].Decode("Sign.png");
-    imgdat.png[2].Decode("Rock1.png");
-    imgdat.png[3].Decode("Rock2.png");
+    imgdat.png[2].Decode("Rock1Gray.png");
+    imgdat.png[3].Decode("Rock2Gray.png");
     imgdat.png[4].Decode("EnemyCar.png");
     imgdat.png[5].Decode("PlayerCar.png");
 }
@@ -80,6 +80,7 @@ void Rover::drawWords(char word[], int arraySize)
 		locationS = 800;
 		wordState = 0;
 		count = 0;
+		numLives--;
 	}
 
 	if (wordState == 2)
@@ -111,48 +112,12 @@ void Rover::drawWords(char word[], int arraySize)
 		glDisable(GL_TEXTURE_2D);
 		glDisable(GL_BLEND);
 
-		locationS = locationS - 1;
+		locationS = locationS - 3;
 
 		glColor3f(0, 0, 1);
 		glRasterPos3f(locationW, 375, 0.2);
 		YsGlDrawFontBitmap32x48(word);
-		locationW = locationW - 1;
-	}
-	else if (wordState == 1)
-	{
-		glColor4d(1.0, 1.0, 1.0, 1.0);
-
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, RoverTextureId[1]);
-
-		glBegin(GL_QUADS);
-
-		glTexCoord2d(0.0, 0.0);
-		glVertex2i(locationS, 300);
-
-		glTexCoord2d(0.0, 1.0);
-		glVertex2i(locationS, imgdat.png[1].hei + 200);
-
-		glTexCoord2d(1.0, 1.0);
-		glVertex2i(imgdat.png[1].wid + locationS, imgdat.png[1].hei + 200);
-
-		glTexCoord2d(1.0, 0.0);
-		glVertex2i(imgdat.png[1].wid + locationS, 300);
-
-		glEnd();
-
-		glDisable(GL_TEXTURE_2D);
-		glDisable(GL_BLEND);
-
-		locationS = locationS - 1;
-
-		glColor3f(1, 0, 0);
-		glRasterPos3f(locationW, 375, 0.2);
-		YsGlDrawFontBitmap32x48(word);
-		locationW = locationW - 1;
+		locationW = locationW - 3;
 	}
 }
 
@@ -185,7 +150,7 @@ void Rover::moveForground()
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_BLEND);
 
-	locationF1 = locationF1 - 1;
+	locationF1 = locationF1 - 5;
 
 	if (locationF1 <= -150)
 	{
@@ -219,7 +184,7 @@ void Rover::moveForground()
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_BLEND);
 
-	locationF2 = locationF2 - 1;
+	locationF2 = locationF2 - 5;
 
 	if (locationF2 <= -150)
 	{
@@ -276,10 +241,10 @@ void Rover::moveRover1()
 	glVertex2i(0, imgdat.png[5].hei + 325);
 
 	glTexCoord2d(1.0, 1.0);
-	glVertex2i(imgdat.png[5].wid - 150, imgdat.png[5].hei + 325);
+	glVertex2i(imgdat.png[5].wid - 200, imgdat.png[5].hei + 325);
 
 	glTexCoord2d(1.0, 0.0);
-	glVertex2i(imgdat.png[5].wid - 150, 475);
+	glVertex2i(imgdat.png[5].wid - 200, 475);
 
 	glEnd();
 
@@ -312,7 +277,7 @@ void Rover::drawYouLost(){
 		drawBackground();
 
 		glRasterPos2i(62, 62);
-		YsGlDrawFontBitmap16x24("Returning to the Main Menu");
+		YsGlDrawFontBitmap16x24("Now returning to the Main Menu");
 
 		FsSwapBuffers();
 		FsSleep(20);
@@ -339,7 +304,7 @@ void Rover::drawYouWon(){
 		drawBackground();
 
 		glRasterPos2i(62, 62);
-		YsGlDrawFontBitmap16x24("Returning to the Main Menu");
+		YsGlDrawFontBitmap16x24("Now returning to the Main Menu");
 
 		FsSwapBuffers();
 		FsSleep(20);
@@ -354,7 +319,7 @@ void Rover::ReturnToMenu(void){
 		
 		glColor3f(1, 1, 1);
 		glRasterPos2i(82, 112);
-		YsGlDrawFontBitmap16x24("Returning to the Main Menu");
+		YsGlDrawFontBitmap16x24("Now returning to the Main Menu");
 
 		FsSwapBuffers();
 		FsSleep(20);
@@ -371,6 +336,19 @@ void Rover::drawRemainingLives(){
 	glRasterPos2i(500, 62);
 	YsGlDrawFontBitmap12x16(livesDisplay);
 
+}
+
+void Rover::drawInput(TextInput in, TextString str) {
+	glRasterPos2i(100, 62);
+
+	auto copy = str;
+	if (0 == time(nullptr) % 2) {
+		copy.Add('|');
+	}
+	else {
+		copy.Add('_');
+	}
+	YsGlDrawFontBitmap16x24(copy.GetPointer());
 }
 
 void RenderRover(void* incoming)
@@ -407,24 +385,23 @@ void RenderRover(void* incoming)
 
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-	//setup
-	game.drawBackground();
-
-	if(game.wordCount < sizeof(game.wordBank)/sizeof(game.wordBank[0])){
+	if (game.wordCount < sizeof(game.wordBank) / sizeof(game.wordBank[0]))
+	{
 		std::string targetWord = game.wordBank[game.wordCount];
 		auto len = targetWord.size();
 		char letters[256];
 		strcpy(letters, targetWord.c_str());
-		
+
+		game.drawBackground();
 		game.drawWords(letters, len);
+		game.drawRover2();
+		game.moveRover1();
+		game.moveForground();
+		game.drawRemainingLives();
+
+		game.textInput.Draw();
 	}
-
-	game.drawRover2();
-	game.moveRover1();
-	game.moveForground();
-	game.drawRemainingLives();
-
-	game.textInput.Draw();
+	
 
 	FsSwapBuffers();
 }
@@ -444,8 +421,11 @@ void Rover::Run(void){
         glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
         textInput.RunOneStep(key,c);
-		r.textInput.RunOneStep(key,c);
+		r.textInput.RunOneStep(key, c);
 
+        // drawTargetWord(letters);
+        textInput.Draw();
+        std::cout << inputStr.GetPointer() << std::endl;
         std::string targetWord = r.wordBank[r.wordCount];
 
 		if (FSKEY_ESC == key)
@@ -473,7 +453,7 @@ void Rover::Run(void){
             inputStr.CleanUp();
 
 			r.textInput.str.CleanUp();
-            r.inputStr.CleanUp();
+			r.inputStr.CleanUp();
 	    }
 
 		if(r.numLives == 0){
@@ -494,6 +474,6 @@ void Rover::Run(void){
 			}
 
 		FsPushOnPaintEvent();
-		// FsSleep(25);
+		FsSleep(25);
 	}
 }

@@ -38,7 +38,6 @@ public:
 	void drawBackground();
 	void drawPlayer();
 	void drawWords(char word[], int arraySize);
-	void wordInput();
 	void drawEnemy();
 	void shootEnemy();
     void Run(void);
