@@ -15,7 +15,7 @@ class OverworldImageData
 {
 public:
 	bool firstRenderingPass;
-	YsRawPngDecoder png[10];
+	YsRawPngDecoder png[12];
 };
 
 class GameData
@@ -52,10 +52,22 @@ public:
 	//Minigame Door Spawn
 	void DrawPortal();
 
-	//Collectibles
+	//Coins
+	void DrawCoins();
+	void GenerateCoins();
+
+	int coinx1, coinx2, coinx3, coiny1, coiny2, coiny3;
+	int coinstate1, coinstate2, coinstate3;
+	int coinvisState;
+
+	//Points
+	void PointCount();
+	void DrawPointCount();
+	int points;
 
 	//GameState
 	int gameState;
+	bool gameEnd = false;
 	bool terminate = false;
 
 	void Initialize(void);

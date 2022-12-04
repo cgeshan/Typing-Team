@@ -1,6 +1,7 @@
 #include "overworld.h"
+#include "ysglfontdata.h"
 
-GLuint OverworldTextureId[10];
+GLuint OverworldTextureId[12];
 
 //BG Items
 void GameData::DrawBG()
@@ -70,6 +71,8 @@ void GameData::ResetScreen()
 		py = 400;
 		++screencount;
 		alphacount = 0;
+		platstate = 0;
+		coinvisState = 0;
 		gameState = 0;
 	}
 
@@ -85,6 +88,8 @@ void GameData::ResetScreen()
 	{
 		screencount = 3;
 		alphacount = 0;
+		platstate = 0;
+		coinvisState = 0;
 		gameState = 3;
 	}
 
@@ -101,6 +106,8 @@ void GameData::ResetScreen()
 		px = 0;
 		py = 400;
 		alphacount = 0;
+		platstate = 0;
+		coinvisState = 0;
 		gameState = 4;
 	}
 }
@@ -192,13 +199,162 @@ void GameData::DrawPlatforms()
 }
 void GameData::GeneratePlatforms()
 {
-	platx1 = rand() % 600 + 100;
-	platx2 = rand() % 600 + 100;
-	platx3 = rand() % 600 + 100;
+	if(platstate == 0)
+	{
+		platx1 = rand() % 600;
+		platx2 = rand() % 600;
+		platx3 = rand() % 600;
 
-	platy1 = rand() % 100 + 300;
-	platy2 = rand() % 100 + 200;
-	platy3 = rand() % 100 + 100;
+		platy1 = rand() % 100 + 300;
+		platy2 = rand() % 100 + 200;
+		platy3 = rand() % 100 + 100;
+
+		platstate = 1;
+	}
+}
+
+//Coins
+void GameData::DrawCoins()
+{
+	glColor4d(1.0, 1.0, 1.0, 1.0);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	if(coinstate1 == 1)
+	{
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, OverworldTextureId[9]);
+
+		glBegin(GL_QUADS);
+
+		glTexCoord2d(0.0, 0.0);
+		glVertex2i(coinx1, coiny1);
+
+		glTexCoord2d(0.0, 1.0);
+		glVertex2i(coinx1, coiny1 + imgdat.png[9].hei);
+
+		glTexCoord2d(1.0, 1.0);
+		glVertex2i(coinx1 + imgdat.png[9].wid, coiny1 + imgdat.png[9].hei);
+
+		glTexCoord2d(1.0, 0.0);
+		glVertex2i(coinx1 + imgdat.png[9].wid, coiny1);
+
+		glEnd();
+
+		glDisable(GL_TEXTURE_2D);
+	}
+
+	if(coinstate2 == 1)
+	{
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, OverworldTextureId[10]);
+
+		glBegin(GL_QUADS);
+
+		glTexCoord2d(0.0, 0.0);
+		glVertex2i(coinx2, coiny2);
+
+		glTexCoord2d(0.0, 1.0);
+		glVertex2i(coinx2, coiny2 + imgdat.png[10].hei);
+
+		glTexCoord2d(1.0, 1.0);
+		glVertex2i(coinx2 + imgdat.png[10].wid, coiny2 + imgdat.png[10].hei);
+
+		glTexCoord2d(1.0, 0.0);
+		glVertex2i(coinx2 + imgdat.png[10].wid, coiny2);
+
+		glEnd();
+
+		glDisable(GL_TEXTURE_2D);
+	}
+
+	if(coinstate3 == 1)
+	{
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, OverworldTextureId[11]);
+
+		glBegin(GL_QUADS);
+
+		glTexCoord2d(0.0, 0.0);
+		glVertex2i(coinx3, coiny3);
+
+		glTexCoord2d(0.0, 1.0);
+		glVertex2i(coinx3, coiny3 + imgdat.png[11].hei);
+
+		glTexCoord2d(1.0, 1.0);
+		glVertex2i(coinx3 + imgdat.png[11].wid, coiny3 + imgdat.png[11].hei);
+
+		glTexCoord2d(1.0, 0.0);
+		glVertex2i(coinx3 + imgdat.png[11].wid, coiny3);
+
+		glEnd();
+
+		glDisable(GL_TEXTURE_2D);
+	}
+
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_BLEND);
+}
+void GameData::GenerateCoins()
+{
+	if(coinvisState == 0)
+	{
+		coinx1 = platx1 + 100;
+		coinx2 = platx2 + 100;
+		coinx3 = platx3 + 100;
+
+		coiny1 = platy1 - 70;
+		coiny2 = platy2 - 70;
+		coiny3 = platy3 - 70;
+
+		coinstate1 = 1;
+		coinstate2 = 1;
+		coinstate3 = 1;
+
+		coinvisState = 1;
+	}
+}
+
+//Increase Point, Remove Coin Image
+void GameData::PointCount()
+{
+	if (px > coinx1 - 80 && px < coinx1 + 20 && py > coiny1 - 100 && py < coiny1)
+	{
+		if (coinstate1 == 1)
+		{
+			points += 10;
+		}
+		coinstate1 = 0;
+	}
+
+	if (px > coinx2 - 80 && px < coinx2 + 20 && py > coiny2 - 100 && py < coiny2)
+	{
+		if (coinstate2 == 1)
+		{
+			points += 10;
+		}
+		coinstate2 = 0;
+	}
+
+	if (px > coinx3 - 80 && px < coinx3 + 20 && py > coiny3 - 100 && py < coiny3)
+	{
+		if (coinstate3 == 1)
+		{
+			points += 10;
+		}
+		coinstate3 = 0;
+	}
+}
+void GameData::DrawPointCount()
+{
+	glRasterPos2i(600, 30);
+	char pointstxt[256];
+	std::sprintf(pointstxt, "%d", points);
+	YsGlDrawFontBitmap16x20("Points: ");
+
+	glRasterPos2i(720, 30);
+	YsGlDrawFontBitmap16x20(pointstxt);
 }
 
 //Player
@@ -381,7 +537,7 @@ void GameData::MovePlayer()
 		}
 		px -= 5;
 	}
-	if (FsInkey() == FSKEY_UP && py > -140 && vy == 0)
+	if (FsGetKeyState(FSKEY_UP) && py > -140 && vy == 0)
 	{
 		vy = 20;
 		jumpstate = 1;
@@ -472,13 +628,11 @@ void RenderOverworld(void* incoming)
 	GameData& game = *(GameData*)incoming;
 	OverworldImageData imgdat;
 
-	
-
 	if (true == game.imgdat.firstRenderingPass)  // Do it only once.
 	{
 		game.imgdat.firstRenderingPass = false; // And, don't do it again.
 
-		for (int i = 0; i < 10 ;++i)
+		for (int i = 0; i < 13 ;++i)
 		{
 			glGenTextures(1, &OverworldTextureId[i]);  // Reserve one texture identifier
 			glBindTexture(GL_TEXTURE_2D, OverworldTextureId[i]);  // Making the texture identifier current (or bring it to the deck)
@@ -505,6 +659,11 @@ void RenderOverworld(void* incoming)
 
 	//setup
 	game.DrawBG();
+	game.PointCount();
+
+	game.DrawPlatforms();
+	game.DrawCoins();
+	game.DrawPointCount();
 
 	//Play game
 	switch (game.gameState)
@@ -512,29 +671,30 @@ void RenderOverworld(void* incoming)
 	case 0: //fade in
 		game.DrawPlayer();
 		game.GeneratePlatforms();
+		game.GenerateCoins();
 		game.ResetScreen();
 		break;
 
 	case 1: //game play
-		game.DrawPlatforms();
 		game.DrawPlayer();
 		game.MovePlayer();
 		break;
 
 	case 2: //fade out
-		game.DrawPlatforms();
+		game.GeneratePlatforms();
+		game.GenerateCoins();
 		game.ResetScreen();
 		break;
 
 	case 3: //fade out to last screen + generate portal
 		game.GeneratePlatforms();
+		game.GenerateCoins();
 		game.DrawPortal();
 		game.DrawPlayer();
 		game.ResetScreen();
 		break;
 
 	case 4: //spawn minigame
-		game.DrawPlatforms();
 		game.DrawPortal();
 		game.DrawPlayer();
 		game.MovePlayer();
@@ -542,13 +702,6 @@ void RenderOverworld(void* incoming)
 	}
 
 	FsPollDevice();
-	auto key = FsInkey();
-	if (FSKEY_ESC == key)
-	{
-		std::cout << "pressed esc" << std::endl;
-		game.terminate = true;
-	}
-
 	FsSwapBuffers();
 }
 
@@ -570,17 +723,31 @@ void GameData::Initialize(void){
 	imgdat.png[6].Decode("Platform.png");
 	imgdat.png[7].Decode("Platform.png");
 	imgdat.png[8].Decode("Portal.png");
+	imgdat.png[9].Decode("moon_coin.png");
+	imgdat.png[10].Decode("moon_coin.png");
+	imgdat.png[11].Decode("moon_coin.png");
 
 	vy = 0.0;
 	facestate = 1;
 	jumpstate = 0;
 	jumpdrawingstate = 0;
 	platstate = 0;
+	coinvisState = 0;
+
+	//coin exists or not
+	coinstate1 = 1;
+	coinstate2 = 1;
+	coinstate3 = 1;
+
+	//point total
+	points = 0;
+
 	//1, 2,3
 	walktimer = 0;
 
 	gameState = 0;
 	terminate = false;
+
 }
 
 void GameData::Run(void){
@@ -598,12 +765,13 @@ void GameData::Run(void){
 		FsPollDevice();
 		auto key = FsInkey();
 
-		if (FSKEY_ESC == key)
+		if (FsGetKeyState(FSKEY_ESC))
 		{
-			std::cout << "pressed esc" << std::endl;
+			std::cout << "\npressed esc" << std::endl;
 			terminate = true;
 			break;
 		}
+
 		if(game.gameState == 4 && game.px >= 650 && game.py >= 400){
 			std::cout << "At portal, now leaving overworld." << std::endl;
 			terminate = true;
@@ -611,9 +779,6 @@ void GameData::Run(void){
 		}
 		
 		FsPushOnPaintEvent();
-		FsSleep(20);
+		FsSleep(15);
 	}
-
-	
 }
-
