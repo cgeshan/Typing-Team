@@ -13,6 +13,13 @@ class Mars
 {
 public:
 	YsRawPngDecoder png[4];
+
+	YsSoundPlayer player;
+	YsSoundPlayer::SoundData wav;
+	
+	//Music
+	int playMusic();
+	
     TextInput textInput;
   	TextString inputStr;
 
@@ -40,7 +47,8 @@ public:
 	void drawRover(void);
 	void drawObstacles(char str[]);
 	void moveObstacle1(void);
-	// void moveObstacle2(void);
+	int GetData(void);
+	void SaveGame(int level, int points);
 	void jumpRover(void); 
 	int checkObstacle(void);
     void RunOneStep(void);

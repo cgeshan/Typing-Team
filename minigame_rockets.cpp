@@ -4,8 +4,65 @@
 // November 22, 2022
 
 #include <string>
+#include "yssimplesound.h"
 #include "minigame_rockets.h"
 #include "textinput.h"
+
+int Rockets::GetData(void)
+{
+	int level;
+	FILE* fp = fopen("game.txt", "r");
+	if (nullptr != fp)
+	{
+		char str[256];
+		int lineNum = 1;
+		while (nullptr != fgets(str, 255, fp))
+		{
+			str[255] = 0;
+			printf(str);
+			lineNum++;
+		}
+		fclose(fp);
+		
+		if (str[0] == '1' || str[0] == '2' || str[0] == '3' || str[0] == '4')
+		{
+			if (str[0] == 49)
+			{
+				level = 1;
+			}
+			else if (str[0] == 50)
+			{
+				level = 2;
+			}
+			else if (str[0] == 51)
+			{
+				level = 3;
+			}
+			else if (str[0] == 52)
+			{
+				level = 4;
+			}
+			//printf("level %d", level);
+		}
+	}
+	
+	else
+	{
+		level = 0;
+	}
+	return level;
+}
+
+void Rockets::SaveGame(int level, int points){
+	FILE* fp = fopen("game.txt", "w");
+
+	if (nullptr != fp){
+		FILE* File;
+		File = fopen("game.txt", "w+");
+		fprintf(File, "%i\n%i", level, points);
+		fclose(File);
+	}
+}
 
 void Rockets::Initialize()
 {
@@ -38,6 +95,8 @@ void Rockets::Initialize()
 
 	png[2].Decode("Rocket2.png");	png[2].Flip();
 	if (0 == png[2].wid || 0 == png[2].hei) { printf("Failed to load Rocket2.png.\n"); }
+	
+	playMusic();
 }
 
 void Rockets::drawBackground()
@@ -243,6 +302,19 @@ void Rockets::ReturnToMenu(void){
 	}
 }
 
+//Sound
+int Rockets::playMusic()
+{
+	if (YSOK != wav.LoadWav("rockets_music.wav"))
+	{
+		printf("failed to load music");
+		return 1;
+	}
+	player.Start();
+	player.PlayOneShot(wav);
+	return 0;
+}
+
 void Rockets::RunOneStep(void){
 
 	FsPollDevice();
@@ -259,7 +331,6 @@ void Rockets::RunOneStep(void){
 	inputStr = textInput.str.GetPointer();
 
 	textInput.RunOneStep(key,c);
-	
 
 	drawBackground();
 	drawRocket(letters, len);
@@ -333,6 +404,12 @@ void Rockets::RunOneStep(void){
 	if(wordCount >= sizeof(wordBank)/sizeof(wordBank[0])){
 		//Winning animation
 		drawYouWon();
+		int level = GetData();
+		int points = GetData();
+		std::cout << "level = " << level << std::endl;
+		if(level == 3){
+			SaveGame(4, 4);
+		}
 		terminate = true;
 	}
 	FsSwapBuffers();

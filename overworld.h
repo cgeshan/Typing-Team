@@ -27,6 +27,7 @@ public:
 	YsSoundPlayer player;
 	YsSoundPlayer::SoundData wav;
 
+
 	//Reset
 	void ResetScreen();
 	int screencount = 0;

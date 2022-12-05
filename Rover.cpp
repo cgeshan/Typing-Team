@@ -2,6 +2,62 @@
 
 GLuint RoverTextureId[10];
 
+int Rover::GetData(void)
+{
+	int level;
+	FILE* fp = fopen("game.txt", "r");
+	if (nullptr != fp)
+	{
+		char str[256];
+		int lineNum = 1;
+		while (nullptr != fgets(str, 255, fp))
+		{
+			str[255] = 0;
+			printf(str);
+			lineNum++;
+		}
+		fclose(fp);
+		
+		if (str[0] == '1' || str[0] == '2' || str[0] == '3' || str[0] == '4')
+		{
+			if (str[0] == 49)
+			{
+				level = 1;
+			}
+			else if (str[0] == 50)
+			{
+				level = 2;
+			}
+			else if (str[0] == 51)
+			{
+				level = 3;
+			}
+			else if (str[0] == 52)
+			{
+				level = 4;
+			}
+			//printf("level %d", level);
+		}
+	}
+	
+	else
+	{
+		level = 0;
+	}
+	return level;
+}
+
+void Rover::SaveGame(int level, int points){
+	FILE* fp = fopen("game.txt", "w");
+
+	if (nullptr != fp){
+		FILE* File;
+		File = fopen("game.txt", "w+");
+		fprintf(File, "%i\n%i", level, points);
+		fclose(File);
+	}
+}
+
 void Rover::Initialize()
 {
 	wordState = 2;
@@ -304,7 +360,7 @@ void Rover::drawYouLost(){
 		drawBackground();
 
 		glRasterPos2i(62, 62);
-		YsGlDrawFontBitmap16x24("Now returning to the Main Menu");
+		YsGlDrawFontBitmap16x24("Returning to the Main Menu");
 
 		FsSwapBuffers();
 		FsSleep(20);
@@ -320,7 +376,10 @@ void Rover::drawYouWon(){
 		YsGlDrawFontBitmap16x24("Congratulations! You Won.");
 
 		glRasterPos2i(92, 92);
-		YsGlDrawFontBitmap16x24("Now unlocking next level...  :-)");
+		YsGlDrawFontBitmap16x24("You have now unlocked all levels");
+
+		glRasterPos2i(92, 122);
+		YsGlDrawFontBitmap16x24("Feel free to replay any levels...  :-)");
 
 		FsSwapBuffers();
 		FsSleep(20);
@@ -331,7 +390,7 @@ void Rover::drawYouWon(){
 		drawBackground();
 
 		glRasterPos2i(62, 62);
-		YsGlDrawFontBitmap16x24("Now returning to the Main Menu");
+		YsGlDrawFontBitmap16x24("Returning to the Main Menu");
 
 		FsSwapBuffers();
 		FsSleep(20);
@@ -346,7 +405,7 @@ void Rover::ReturnToMenu(void){
 		
 		glColor3f(1, 1, 1);
 		glRasterPos2i(82, 112);
-		YsGlDrawFontBitmap16x24("Now returning to the Main Menu");
+		YsGlDrawFontBitmap16x24("Returning to the Main Menu");
 
 		FsSwapBuffers();
 		FsSleep(20);
@@ -376,6 +435,19 @@ void Rover::drawInput(TextInput in, TextString str) {
 		copy.Add('_');
 	}
 	YsGlDrawFontBitmap16x24(copy.GetPointer());
+}
+
+//Sound
+int Rover::playMusic()
+{
+	if (YSOK != wav.LoadWav("rover_music.wav"))
+	{
+		printf("failed to load music");
+		return 1;
+	}
+	player.Start();
+	player.PlayOneShot(wav);
+	return 0;
 }
 
 void RenderRover(void* incoming)
@@ -437,6 +509,9 @@ void Rover::Run(void){
     Rover r;
     r.Initialize();
     FsRegisterOnPaintCallBack(RenderRover, &r);
+	r.playMusic();
+
+	std::string targetWord;
 
     for (;;)
 	{
@@ -468,6 +543,11 @@ void Rover::Run(void){
 
 		if (r.locationR >= 600 || r.wordCount >= sizeof(r.wordBank) / sizeof(r.wordBank[0])) {
 			drawYouWon();
+			int level = r.GetData();
+			int points = r.GetData();
+			if(level == 4){
+				r.SaveGame(4, 4);
+			}
 			terminate = true;
 			break;
 		}
@@ -481,8 +561,11 @@ void Rover::Run(void){
 		std::cout << sizeof(r.wordBank) << std::endl;
 		std::cout << sizeof(r.wordBank[0]) << std::endl;
 
-		std::string targetWord = r.wordBank[r.wordCount];
-
+		if (r.wordCount < sizeof(r.wordBank) / sizeof(r.wordBank[0]))
+		{
+			targetWord = r.wordBank[r.wordCount];
+		}
+		
         if(FSKEY_ENTER == key)
 		{
             if (inputStr.GetPointer() == targetWord) 
@@ -504,6 +587,6 @@ void Rover::Run(void){
 	    }
 
 		FsPushOnPaintEvent();
-		FsSleep(25);
+		// FsSleep(25);
 	}
 }

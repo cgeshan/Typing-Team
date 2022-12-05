@@ -27,6 +27,12 @@ public:
 	bool changeWords = false;
 	RoverImageData imgdat;
 
+	YsSoundPlayer player;
+	YsSoundPlayer::SoundData wav;
+	
+	//Music
+	int playMusic();
+
     TextInput textInput;
   	TextString inputStr;
 
@@ -41,6 +47,8 @@ public:
 	void moveForground();
 	void drawRover2();
 	void moveRover1();
+	int GetData(void);
+	void SaveGame(int level, int points);
     void Run();
 	void drawYouLost();
 	void drawYouWon();

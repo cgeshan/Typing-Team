@@ -9,11 +9,68 @@
 #include <math.h>
 #include <string>
 #include "fssimplewindow.h"
+#include "yssimplesound.h"
 #include "yspng.h"
 #include "ysglfontdata.h"
 #include "minigame_mars.h"
 #include "textinput.h"
 #include "tutorial.h"
+
+int Mars::GetData(void)
+{
+	int level;
+	FILE* fp = fopen("game.txt", "r");
+	if (nullptr != fp)
+	{
+		char str[256];
+		int lineNum = 1;
+		while (nullptr != fgets(str, 255, fp))
+		{
+			str[255] = 0;
+			// printf(str);
+			lineNum++;
+		}
+		fclose(fp);
+		
+		if (str[0] == '1' || str[0] == '2' || str[0] == '3' || str[0] == '4')
+		{
+			if (str[0] == 49)
+			{
+				level = 1;
+			}
+			else if (str[0] == 50)
+			{
+				level = 2;
+			}
+			else if (str[0] == 51)
+			{
+				level = 3;
+			}
+			else if (str[0] == 52)
+			{
+				level = 4;
+			}
+			//printf("level %d", level);
+		}
+	}
+	
+	else
+	{
+		level = 0;
+	}
+	return level;
+}
+
+void Mars::SaveGame(int level, int points){
+	FILE* fp = fopen("game.txt", "w");
+
+	if (nullptr != fp){
+		FILE* File;
+		File = fopen("game.txt", "w+");
+		fprintf(File, "%i\n%i", level, points);
+		fclose(File);
+	}
+}
 
 void Mars::Initialize(void)
 {
@@ -59,6 +116,8 @@ void Mars::Initialize(void)
 
 	png[3].Decode("rock2_rotated.png");	png[3].Flip();
 	if (0 == png[3].wid || 0 == png[3].hei) { printf("Failed to load rock2_rotated.png.\n");}
+
+	playMusic();
 }
 
 void Mars::drawBackground(void)
@@ -160,23 +219,6 @@ void Mars::moveObstacle1()
 	// update y values   
 	y1 = 435 + (tan(angle) * x1); // y=b+mx based on angle of the mountain
 }
-
-// void Mars::moveObstacle2()
-// {
-// 	if (x2 < -100)
-// 	{
-// 		srand(time(NULL)); // set seed for the random-number generator
-// 		x2 = 800 + rand() % 201; // move obstacle off screen to a random variable x between 800 and 1,000 
-// 	}
-
-// 	else
-// 	{
-// 		x2 -= speed * cos(angle);
-// 	}
-
-// 	// update y values   
-// 	y2 = 435 + (tan(angle) * x2); // y=b+mx based on angle of the mountain
-// }
 
 void Mars::jumpRover()
 {
@@ -289,6 +331,19 @@ void Mars::ReturnToMenu(void){
 	}
 }
 
+//Sound
+int Mars::playMusic()
+{
+	if (YSOK != wav.LoadWav("mars_music.wav"))
+	{
+		printf("failed to load music");
+		return 1;
+	}
+	player.Start();
+	player.PlayOneShot(wav);
+	return 0;
+}
+
 void Mars::RunOneStep(void){
 
 	FsPollDevice();
@@ -312,11 +367,6 @@ void Mars::RunOneStep(void){
 	drawObstacles(letters);
 	moveObstacle1();
 
-	
-	
-	// moveObstacle2();
-	
-	// std::cout << wordCount << std::endl;
 	glColor3ub(236, 157, 117);
 	drawRemainingLives();
 	textInput.Draw();
@@ -365,7 +415,6 @@ void Mars::RunOneStep(void){
 	if (rover == 1) // if rover is jumping
 	{
 		jumpRover();
-		
 	}
 	
 	// check if rover has hit an obstacle
@@ -377,8 +426,6 @@ void Mars::RunOneStep(void){
 	}	
 
 	prevCheck = checkObstacle();
-	// std::cout << "Check: " << prevCheck << std::endl;
-	// std::cout << "Lives: " << numLives << std::endl;
 
 	if(numLives == 0){
 		//You Lost animation
@@ -396,6 +443,12 @@ void Mars::RunOneStep(void){
 	if(wordCount >= sizeof(wordBank)/sizeof(wordBank[0])){
 		//Winning animation
 		drawYouWon();
+		int level = GetData();
+		int points = GetData();
+		std::cout << "level = " << level << std::endl;
+		if(level <= 151 && level != 2 && level != 3 && level != 4){
+			SaveGame(2, 2);
+		}
 		term = true;
 	}
 	

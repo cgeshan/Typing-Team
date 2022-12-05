@@ -12,11 +12,15 @@ class Menu
 public:
 	YsRawPngDecoder png[15]; //Change to 16 if add remainder of images
 
+	YsSoundPlayer player;
+	YsSoundPlayer::SoundData wav;
+
 	double x, y, dt,tx1, tx2, titly1, titly2, bobv;
 	int move, move2, bob;
 	int level;
 
 	void Initialize(void);
+	int playMusic(void);
 	void drawRover(void);
 	void drawBackground(void);
 	void drawTitle(void);
@@ -28,6 +32,9 @@ public:
 	void drawLevel3(int, int, bool, bool);
 	void drawLevel4(int, int, bool, bool);
 	void LoadingGame(int level);
+	void SaveGame(int level, int points);
+	int GetData(void);
+	void ResetGame(bool&l1,bool&l2,bool&l3,bool&l4);
 
 };
 

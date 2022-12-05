@@ -290,6 +290,74 @@ void Galaga::drawInput(TextInput in, TextString str) {
 	YsGlDrawFontBitmap16x24(copy.GetPointer());
 }
 
+int Galaga::GetData(void)
+{
+	int level;
+	FILE* fp = fopen("game.txt", "r");
+	if (nullptr != fp)
+	{
+		char str[256];
+		int lineNum = 1;
+		while (nullptr != fgets(str, 255, fp))
+		{
+			str[255] = 0;
+			printf(str);
+			lineNum++;
+		}
+		fclose(fp);
+		
+		if (str[0] == '1' || str[0] == '2' || str[0] == '3' || str[0] == '4')
+		{
+			if (str[0] == 49)
+			{
+				level = 1;
+			}
+			else if (str[0] == 50)
+			{
+				level = 2;
+			}
+			else if (str[0] == 51)
+			{
+				level = 3;
+			}
+			else if (str[0] == 52)
+			{
+				level = 4;
+			}
+			//printf("level %d", level);
+		}
+	}
+	
+	else
+	{
+		level = 0;
+	}
+	return level;
+}
+
+void Galaga::SaveGame(int level, int points){
+	FILE* fp = fopen("game.txt", "w");
+
+	if (nullptr != fp){
+		FILE* File;
+		File = fopen("game.txt", "w+");
+		fprintf(File, "%i\n%i", level, points);
+		fclose(File);
+	}
+}
+
+int Galaga::playMusic()
+{
+	if (YSOK != wav.LoadWav("galaga_music.wav"))
+	{
+		printf("failed to load music");
+		return 1;
+	}
+	player.Start();
+	player.PlayOneShot(wav);
+	return 0;
+}
+
 void RenderGalaga(void* incoming)
 {
 	Galaga& game = *(Galaga*)incoming;
@@ -360,6 +428,8 @@ void Galaga::Run(void){
 
     g.Initialize();
 
+	g.playMusic();
+
     FsRegisterOnPaintCallBack(RenderGalaga, &g);
 
     	
@@ -396,6 +466,11 @@ void Galaga::Run(void){
         if (g.numHit >= sizeof(g.wordBank)/sizeof(g.wordBank[0]) || g.wordCount >= sizeof(g.wordBank)/sizeof(g.wordBank[0]))
         {
             drawYouWon();
+			int level = g.GetData();
+			int points = g.GetData();
+			if(level == 2){
+				g.SaveGame(3, 3);
+			}
 			terminate = true; // Go to Overworld
 			break;
         }
@@ -427,6 +502,6 @@ void Galaga::Run(void){
 			// g.wordState = 2;
 	    }
 		FsPushOnPaintEvent();
-		FsSleep(25);
+		FsSleep(10);
 	}
 }

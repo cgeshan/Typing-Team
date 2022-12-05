@@ -14,6 +14,12 @@ class Rockets
 {
 public:
 	YsRawPngDecoder png[3];
+
+	YsSoundPlayer player;
+	YsSoundPlayer::SoundData wav;
+	
+	//Music
+	int playMusic();
     TextInput textInput;
   	TextString inputStr;
 
@@ -34,7 +40,8 @@ public:
 	void speedRocket1(void);
 	void speedRocket2(void);
 	int checkRockets(void);
-
+	int GetData(void);
+	void SaveGame(int level, int points);
     void RunOneStep(void);
 	void drawYouLost();
 	void drawYouWon();
