@@ -76,6 +76,7 @@ void Mars::Initialize(void)
 {
 	term = false;
 	wordCount = 0;
+	randWord = (rand() % (65));
 	changeWord = false;
 
 	// scene variables
@@ -352,7 +353,7 @@ void Mars::RunOneStep(void){
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	std::string targetWord = wordBank[wordCount];
+	std::string targetWord = wordBank[randWord];
 	auto len = targetWord.size();
 	char letters[256];
 	strcpy(letters, targetWord.c_str()); 
@@ -434,13 +435,14 @@ void Mars::RunOneStep(void){
 	}
 
 	if(x1 + png[2].wid <= 100.0 && changeWord == true){
-		if(wordCount < sizeof(wordBank)/sizeof(wordBank[0])){
+		if(wordCount < 10){
 			wordCount++;
+			randWord = (rand() % (65));
 			changeWord = false;
 		}
 	}
 	
-	if(wordCount >= sizeof(wordBank)/sizeof(wordBank[0])){
+	if(wordCount >= 10){
 		//Winning animation
 		drawYouWon();
 		int level = GetData();

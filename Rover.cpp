@@ -484,9 +484,9 @@ void RenderRover(void* incoming)
 
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-	if (game.wordCount < sizeof(game.wordBank) / sizeof(game.wordBank[0]))
+	if (game.wordCount < 10)
 	{
-		std::string targetWord = game.wordBank[game.wordCount];
+		std::string targetWord = game.wordBank[game.randWord];
 		auto len = targetWord.size();
 		char letters[256];
 		strcpy(letters, targetWord.c_str());
@@ -512,6 +512,8 @@ void Rover::Run(void){
 	r.playMusic();
 
 	std::string targetWord;
+	srand(time(NULL));
+	r.randWord = (rand() % (65));
 
     for (;;)
 	{
@@ -541,7 +543,7 @@ void Rover::Run(void){
 			break;
 		}
 
-		if (r.locationR >= 600 || r.wordCount >= sizeof(r.wordBank) / sizeof(r.wordBank[0])) {
+		if (r.locationR >= 600 || r.wordCount >= 10) {
 			drawYouWon();
 			int level = r.GetData();
 			int points = r.GetData();
@@ -554,16 +556,14 @@ void Rover::Run(void){
 
 		if (r.locationS <= 0 && changeWords == true) {
 			r.wordCount++;
+			r.randWord = (rand() % (65));
+			targetWord = r.wordBank[randWord];
 			changeWords = false;
 		}
-	
-		std::cout << inputStr.GetPointer() << std::endl;
-		std::cout << sizeof(r.wordBank) << std::endl;
-		std::cout << sizeof(r.wordBank[0]) << std::endl;
 
-		if (r.wordCount < sizeof(r.wordBank) / sizeof(r.wordBank[0]))
+		if (r.wordCount < 10)
 		{
-			targetWord = r.wordBank[r.wordCount];
+			targetWord = r.wordBank[r.randWord];
 		}
 		
         if(FSKEY_ENTER == key)
@@ -587,6 +587,6 @@ void Rover::Run(void){
 	    }
 
 		FsPushOnPaintEvent();
-		// FsSleep(25);
+		FsSleep(20);
 	}
 }

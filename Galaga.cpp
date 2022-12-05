@@ -401,8 +401,8 @@ void RenderGalaga(void* incoming)
 
 	}
 
-	if(game.wordCount < sizeof(game.wordBank)/sizeof(game.wordBank[0])){
-		std::string targetWord = game.wordBank[game.wordCount];
+	if(game.wordCount < 10){
+		std::string targetWord = game.wordBank[game.randWord];
 		auto len = targetWord.size();
 		char letters[256];
 		strcpy(letters, targetWord.c_str());
@@ -425,13 +425,13 @@ void RenderGalaga(void* incoming)
 
 void Galaga::Run(void){
     Galaga g;
-
     g.Initialize();
-
 	g.playMusic();
 
     FsRegisterOnPaintCallBack(RenderGalaga, &g);
 
+	srand(time(NULL));
+	g.randWord = (rand() % (65));
     	
 	for (;;)
 	{
@@ -463,7 +463,7 @@ void Galaga::Run(void){
 			break;
 		}
 
-        if (g.numHit >= sizeof(g.wordBank)/sizeof(g.wordBank[0]) || g.wordCount >= sizeof(g.wordBank)/sizeof(g.wordBank[0]))
+        if (g.numHit >= 10)
         {
             drawYouWon();
 			int level = g.GetData();
@@ -475,7 +475,7 @@ void Galaga::Run(void){
 			break;
         }
 		
-		std::string targetWord = g.wordBank[g.wordCount];
+		std::string targetWord = g.wordBank[g.randWord];
 		if(FSKEY_ENTER == key){
 
             if (inputStr.GetPointer() == targetWord) 
@@ -484,6 +484,7 @@ void Galaga::Run(void){
 				g.locationW = 0.0;
 				g.enemyState = 0;
 				g.wordCount++;
+				g.randWord = (rand() % (65));
                 auto completeTime = FsPassedTime();
                 std::cout << "Completion time: " << completeTime*0.001 << " seconds." << std::endl;
 				g.velE += 0.1;

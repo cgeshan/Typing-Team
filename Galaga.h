@@ -23,7 +23,7 @@ public:
 class Galaga
 {
 public:
-	int enemyState, wordState, laserX, laserY, numHit, numLives, wordCount=0;
+	int enemyState, wordState, laserX, laserY, numHit, numLives, randWord, wordCount=0;
 	double locationE, locationW, velE, velW;
 	GalagaImageData imgdat;
 
@@ -36,7 +36,73 @@ public:
     TextInput textInput;
   	TextString inputStr;
 
-    std::string wordBank[5] = {"cow", "apple", "space", "rover", "astronauts"};
+    std::string wordBank[66] = {"asteroid",
+								"astronaut",
+								"astronomer",
+								"astronomy",
+								"axial tilt",
+								"black hole",
+								"comet",
+								"cosmonaut",
+								"cosmos",
+								"crater",
+								"day",
+								"deep space",
+								"density",
+								"dust",
+								"dwarf star",
+								"Earth",
+								"eclipse",
+								"ecliptic",
+								"equinox",
+								"full moon",
+								"galaxy",
+								"gravity",
+								"half moon",
+								"inertia",
+								"Jupiter",
+								"lens",
+								"light-year",
+								"lunar",
+								"magnitude",
+								"Mars",
+								"mass",
+								"Mercury",
+								"meteor",
+								"meteorite",
+								"meteoroid",
+								"Milky Way",
+								"moon",
+								"nebula",
+								"Neptune",
+								"new moon",
+								"orbit",
+								"penumbra",
+								"phase",
+								"planet",
+								"Pluto",
+								"rings",
+								"rocket",
+								"satellite",
+								"Saturn",
+								"sky",
+								"solar",
+								"solar wind",
+								"solstice",
+								"Space",
+								"space",
+								"star",
+								"starlight",
+								"sun",
+								"telescope",
+								"umbra",
+								"universe",
+								"Uranus",
+								"Venus",
+								"waning",
+								"waxing",
+								"zodiac"
+								};
 
     bool terminate = false;
 

@@ -84,6 +84,7 @@ void Rockets::Initialize()
 	prevCheck = 0;
 	
 	wordCount = 0;
+	randWord = (rand() % (65));
 	bool terminate = false;
 
 	// image data
@@ -186,6 +187,7 @@ void Rockets::speedRocket1()
 		vis1 = 0; // rocket is no longer visable
 		vis2 = 1; // set other rocket to visable (switch)
 		wordCount++;
+		randWord = (rand() % (65));
 	}
 
 }
@@ -203,6 +205,7 @@ void Rockets::speedRocket2()
 		vis2 = 0; // rocket is no longer visable 
 		vis1 = 1; // set other rocket to visable (switch)
 		wordCount++;
+		randWord = (rand() % (65));
 	}
 
 }
@@ -302,7 +305,6 @@ void Rockets::ReturnToMenu(void){
 	}
 }
 
-//Sound
 int Rockets::playMusic()
 {
 	if (YSOK != wav.LoadWav("rockets_music.wav"))
@@ -323,7 +325,10 @@ void Rockets::RunOneStep(void){
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	std::string targetWord = wordBank[wordCount];
+	srand(time(NULL));
+	
+
+	std::string targetWord = wordBank[randWord];
 	auto len = targetWord.size();
 	char letters[256];
 	strcpy(letters, targetWord.c_str()); 
@@ -401,7 +406,7 @@ void Rockets::RunOneStep(void){
 		terminate = true;
 	}
 	
-	if(wordCount >= sizeof(wordBank)/sizeof(wordBank[0])){
+	if(wordCount >= 10){
 		//Winning animation
 		drawYouWon();
 		int level = GetData();
