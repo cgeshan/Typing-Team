@@ -17,7 +17,7 @@ int Rover::GetData(void)
 			lineNum++;
 		}
 		fclose(fp);
-		
+
 		if (str[0] == '1' || str[0] == '2' || str[0] == '3' || str[0] == '4')
 		{
 			if (str[0] == 49)
@@ -39,7 +39,7 @@ int Rover::GetData(void)
 			//printf("level %d", level);
 		}
 	}
-	
+
 	else
 	{
 		level = 0;
@@ -47,10 +47,10 @@ int Rover::GetData(void)
 	return level;
 }
 
-void Rover::SaveGame(int level, int points){
+void Rover::SaveGame(int level, int points) {
 	FILE* fp = fopen("game.txt", "w");
 
-	if (nullptr != fp){
+	if (nullptr != fp) {
 		FILE* File;
 		File = fopen("game.txt", "w+");
 		fprintf(File, "%i\n%i", level, points);
@@ -60,6 +60,7 @@ void Rover::SaveGame(int level, int points){
 
 void Rover::Initialize()
 {
+	randWord = 0;
 	wordState = 2;
 	locationW = 895;
 	locationS = 800;
@@ -70,16 +71,16 @@ void Rover::Initialize()
 	velW = 2;
 	count = 0;
 	numLives = 3;
-    terminate = false;
+	terminate = false;
 	changeWords = false;
 
-    imgdat.firstRenderingPass = true;
-    imgdat.png[0].Decode("RacingBG_moonGround.png");
-    imgdat.png[1].Decode("Sign.png");
-    imgdat.png[2].Decode("Rock1Gray.png");
-    imgdat.png[3].Decode("Rock2Gray.png");
-    imgdat.png[4].Decode("EnemyCar.png");
-    imgdat.png[5].Decode("PlayerCar.png");
+	imgdat.firstRenderingPass = true;
+	imgdat.png[0].Decode("RacingBG_moonGround.png");
+	imgdat.png[1].Decode("Sign.png");
+	imgdat.png[2].Decode("Rock1Gray.png");
+	imgdat.png[3].Decode("Rock2Gray.png");
+	imgdat.png[4].Decode("EnemyCar.png");
+	imgdat.png[5].Decode("PlayerCar.png");
 	imgdat.png[6].Decode("Stars.png");
 }
 
@@ -111,7 +112,7 @@ void Rover::drawBackground()
 
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_BLEND);
-	
+
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -139,7 +140,7 @@ void Rover::drawBackground()
 }
 
 void Rover::drawWords(char word[], int arraySize)
-{	
+{
 	if (count == 0)
 	{
 		if (arraySize > 4)
@@ -340,9 +341,9 @@ void Rover::moveRover1()
 	glDisable(GL_BLEND);
 }
 
-void Rover::drawYouLost(){
-	for(int i = 0; i < 150; i++){
-		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+void Rover::drawYouLost() {
+	for (int i = 0; i < 150; i++) {
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		drawBackground();
 
 		glRasterPos2i(62, 62);
@@ -355,8 +356,8 @@ void Rover::drawYouLost(){
 		FsSleep(20);
 	}
 
-	for(int i = 0; i < 150; i++){
-		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	for (int i = 0; i < 150; i++) {
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		drawBackground();
 
 		glRasterPos2i(62, 62);
@@ -367,9 +368,9 @@ void Rover::drawYouLost(){
 	}
 }
 
-void Rover::drawYouWon(){
-	for(int i = 0; i < 150; i++){
-		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+void Rover::drawYouWon() {
+	for (int i = 0; i < 150; i++) {
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		drawBackground();
 
 		glRasterPos2i(62, 62);
@@ -385,8 +386,8 @@ void Rover::drawYouWon(){
 		FsSleep(20);
 	}
 
-	for(int i = 0; i < 150; i++){
-		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	for (int i = 0; i < 150; i++) {
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		drawBackground();
 
 		glRasterPos2i(62, 62);
@@ -397,12 +398,12 @@ void Rover::drawYouWon(){
 	}
 }
 
-void Rover::ReturnToMenu(void){
-	for(int i = 0; i < 50; i++){
-		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+void Rover::ReturnToMenu(void) {
+	for (int i = 0; i < 50; i++) {
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		drawBackground();
-		
+
 		glColor3f(1, 1, 1);
 		glRasterPos2i(82, 112);
 		YsGlDrawFontBitmap16x24("Returning to the Main Menu");
@@ -412,12 +413,12 @@ void Rover::ReturnToMenu(void){
 	}
 }
 
-void Rover::drawRemainingLives(){
+void Rover::drawRemainingLives() {
 
 	std::string strNum = std::to_string(numLives);
 	std::string strLives = "Remaining Lives: " + strNum;
 	char livesDisplay[256];
-	strcpy(livesDisplay, strLives.c_str()); 
+	strcpy(livesDisplay, strLives.c_str());
 
 	glRasterPos2i(500, 62);
 	YsGlDrawFontBitmap12x16(livesDisplay);
@@ -500,35 +501,35 @@ void RenderRover(void* incoming)
 
 		game.textInput.Draw();
 	}
-	
+
 
 	FsSwapBuffers();
 }
 
-void Rover::Run(void){
-    Rover r;
-    r.Initialize();
-    FsRegisterOnPaintCallBack(RenderRover, &r);
+void Rover::Run(void) {
+	Rover r;
+	r.Initialize();
+	FsRegisterOnPaintCallBack(RenderRover, &r);
 	r.playMusic();
 
 	std::string targetWord;
 	srand(time(NULL));
 	r.randWord = (rand() % (65));
 
-    for (;;)
+	for (;;)
 	{
-        FsPollDevice();
-        auto key = FsInkey();
-        auto c=FsInkeyChar();    
-        inputStr = textInput.str.GetPointer();
+		FsPollDevice();
+		auto key = FsInkey();
+		auto c = FsInkeyChar();
+		inputStr = textInput.str.GetPointer();
 
-        glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-        textInput.RunOneStep(key,c);
+		textInput.RunOneStep(key, c);
 		r.textInput.RunOneStep(key, c);
 
-        // drawTargetWord(letters);
-        textInput.Draw();
+		// drawTargetWord(letters);
+		textInput.Draw();
 
 		if (FSKEY_ESC == key)
 		{
@@ -547,7 +548,7 @@ void Rover::Run(void){
 			drawYouWon();
 			int level = r.GetData();
 			int points = r.GetData();
-			if(level == 4){
+			if (level == 3) {
 				r.SaveGame(4, 4);
 			}
 			terminate = true;
@@ -557,6 +558,7 @@ void Rover::Run(void){
 		if (r.locationS <= 0 && changeWords == true) {
 			r.wordCount++;
 			r.randWord = (rand() % (65));
+			std::cout << randWord << std::endl;
 			targetWord = r.wordBank[randWord];
 			changeWords = false;
 		}
@@ -565,26 +567,26 @@ void Rover::Run(void){
 		{
 			targetWord = r.wordBank[r.randWord];
 		}
-		
-        if(FSKEY_ENTER == key)
+
+		if (FSKEY_ENTER == key)
 		{
-            if (inputStr.GetPointer() == targetWord) 
-            {
+			if (inputStr.GetPointer() == targetWord)
+			{
 				r.wordState = 0;
 				r.locationR = r.locationR + 60;
-				
+
 				changeWords = true;
 				// r.wordCount++;
-                auto completeTime = FsPassedTime();
-                std::cout << "Completion time: " << completeTime*0.001 << " seconds." << std::endl;
-            }
-            
-            textInput.str.CleanUp();
-            inputStr.CleanUp();
+				auto completeTime = FsPassedTime();
+				std::cout << "Completion time: " << completeTime * 0.001 << " seconds." << std::endl;
+			}
+
+			textInput.str.CleanUp();
+			inputStr.CleanUp();
 
 			r.textInput.str.CleanUp();
 			r.inputStr.CleanUp();
-	    }
+		}
 
 		FsPushOnPaintEvent();
 		FsSleep(20);

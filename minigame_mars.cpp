@@ -18,7 +18,7 @@
 
 int Mars::GetData(void)
 {
-	int level;
+	int level = 0;
 	FILE* fp = fopen("game.txt", "r");
 	if (nullptr != fp)
 	{
@@ -31,7 +31,7 @@ int Mars::GetData(void)
 			lineNum++;
 		}
 		fclose(fp);
-		
+
 		if (str[0] == '1' || str[0] == '2' || str[0] == '3' || str[0] == '4')
 		{
 			if (str[0] == 49)
@@ -53,7 +53,7 @@ int Mars::GetData(void)
 			//printf("level %d", level);
 		}
 	}
-	
+
 	else
 	{
 		level = 0;
@@ -61,10 +61,10 @@ int Mars::GetData(void)
 	return level;
 }
 
-void Mars::SaveGame(int level, int points){
+void Mars::SaveGame(int level, int points) {
 	FILE* fp = fopen("game.txt", "w");
 
-	if (nullptr != fp){
+	if (nullptr != fp) {
 		FILE* File;
 		File = fopen("game.txt", "w+");
 		fprintf(File, "%i\n%i", level, points);
@@ -82,7 +82,7 @@ void Mars::Initialize(void)
 	// scene variables
 	const double YS_PI = 3.14115927;
 	angle = (YS_PI / 10.0); // angle of the mountain
-	
+
 	// rover variables
 	rover = 0; // rover is not jumping
 	start_x = 100, start_y = 430; // starting position of rover and where to return after jump
@@ -91,7 +91,7 @@ void Mars::Initialize(void)
 	vel = 300; // initial velocity of rover 
 	vel_x = vel * sin(angle);
 	vel_y = -1 * vel * cos(angle);
-	dt = 0.1; 
+	dt = 0.1;
 
 	// obstacle variables
 	srand(time(NULL)); // set seed for the random-number generator
@@ -99,7 +99,7 @@ void Mars::Initialize(void)
 	// x2 = x1 + 800; // second obstacle is always 300 pixels to the right of the first obstacle  
 	y1 = 435 + (tan(angle) * x1); // y=b+mx based on angle of the mountain
 	// y2 = 435 + (tan(angle) * x1); // y=b+mx based on angle of the mountain
-	speed = 5.0; 
+	speed = 5.0;
 	height = 130;
 	numLives = 3;
 	prevCheck = 0;
@@ -107,16 +107,16 @@ void Mars::Initialize(void)
 
 	// image data
 	png[0].Decode("mars_background.png");	png[0].Flip();
-	if (0 == png[0].wid || 0 == png[0].hei) {printf("Failed to load mars_background.png.\n");}
+	if (0 == png[0].wid || 0 == png[0].hei) { printf("Failed to load mars_background.png.\n"); }
 
 	png[1].Decode("mars_rover_rotated.png");	png[1].Flip();
-	if (0 == png[1].wid || 0 == png[1].hei) { printf("Failed to load mars_rover_rotated.png.\n");}
+	if (0 == png[1].wid || 0 == png[1].hei) { printf("Failed to load mars_rover_rotated.png.\n"); }
 
 	png[2].Decode("rock1_rotated.png");	png[2].Flip();
-	if (0 == png[2].wid || 0 == png[2].hei) { printf("Failed to load rock1_rotated.png.\n");}
+	if (0 == png[2].wid || 0 == png[2].hei) { printf("Failed to load rock1_rotated.png.\n"); }
 
 	png[3].Decode("rock2_rotated.png");	png[3].Flip();
-	if (0 == png[3].wid || 0 == png[3].hei) { printf("Failed to load rock2_rotated.png.\n");}
+	if (0 == png[3].wid || 0 == png[3].hei) { printf("Failed to load rock2_rotated.png.\n"); }
 
 	playMusic();
 }
@@ -141,18 +141,18 @@ void Mars::drawBackground(void)
 	glEnd();
 
 	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA); 
-	glRasterPos2i(0, 600 - 1); 
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glRasterPos2i(0, 600 - 1);
 	glDrawPixels(png[0].wid, png[0].hei, GL_RGBA, GL_UNSIGNED_BYTE, png[0].rgba);
-	glDisable(GL_BLEND); 
+	glDisable(GL_BLEND);
 }
 
-void Mars::drawRemainingLives(){
+void Mars::drawRemainingLives() {
 
 	std::string strNum = std::to_string(numLives);
 	std::string strLives = "Remaining Lives: " + strNum;
 	char livesDisplay[256];
-	strcpy(livesDisplay, strLives.c_str()); 
+	strcpy(livesDisplay, strLives.c_str());
 
 	glRasterPos2i(500, 62);
 	YsGlDrawFontBitmap12x16(livesDisplay);
@@ -182,7 +182,7 @@ void Mars::drawObstacles(char str[])
 {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	
+
 	glRasterPos2i(x1, y1);
 	glDrawPixels(png[2].wid, png[2].hei, GL_RGBA, GL_UNSIGNED_BYTE, png[2].rgba);
 	// glRasterPos2i(x2, y2);
@@ -190,12 +190,12 @@ void Mars::drawObstacles(char str[])
 
 	glDisable(GL_BLEND);
 	// text on rocks
-	if(changeWord == false){
+	if (changeWord == false) {
 		glColor3ub(255, 255, 255);
 		glRasterPos2d(x1 + 50, y1 - 50);
 		YsGlDrawFontBitmap20x32(str);
 	}
-	
+
 	glFlush();
 
 	// glColor3ub(255, 255, 255);
@@ -229,7 +229,7 @@ void Mars::jumpRover()
 		rover_y = start_y;
 		rover = 0; // update state to 'not jumping'
 	}
-	
+
 	else
 	{
 		rover_x += vel_x * dt;
@@ -253,14 +253,14 @@ int Mars::checkObstacle()
 	return 0;
 }
 
-void Mars::drawTargetWord(char letters[]){
+void Mars::drawTargetWord(char letters[]) {
 	glRasterPos2i(100, 32);
 	YsGlDrawFontBitmap16x24(letters);
 }
 
-void Mars::drawYouLost(){
-	for(int i = 0; i < 150; i++){
-		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+void Mars::drawYouLost() {
+	for (int i = 0; i < 150; i++) {
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		drawBackground();
 		drawForeground();
 
@@ -274,8 +274,8 @@ void Mars::drawYouLost(){
 		FsSleep(20);
 	}
 
-	for(int i = 0; i < 150; i++){
-		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	for (int i = 0; i < 150; i++) {
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		drawBackground();
 		drawForeground();
 
@@ -287,9 +287,9 @@ void Mars::drawYouLost(){
 	}
 }
 
-void Mars::drawYouWon(){
-	for(int i = 0; i < 150; i++){
-		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+void Mars::drawYouWon() {
+	for (int i = 0; i < 150; i++) {
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		drawBackground();
 		drawForeground();
 
@@ -303,8 +303,8 @@ void Mars::drawYouWon(){
 		FsSleep(20);
 	}
 
-	for(int i = 0; i < 150; i++){
-		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	for (int i = 0; i < 150; i++) {
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		drawBackground();
 		drawForeground();
 
@@ -316,13 +316,13 @@ void Mars::drawYouWon(){
 	}
 }
 
-void Mars::ReturnToMenu(void){
-	for(int i = 0; i < 50; i++){
-		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+void Mars::ReturnToMenu(void) {
+	for (int i = 0; i < 50; i++) {
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		drawBackground();
 		drawForeground();
-		
+
 		glColor3ub(236, 157, 117);
 		glRasterPos2i(82, 112);
 		YsGlDrawFontBitmap16x24("Returning to the Main Menu");
@@ -345,26 +345,26 @@ int Mars::playMusic()
 	return 0;
 }
 
-void Mars::RunOneStep(void){
+void Mars::RunOneStep(void) {
 
 	FsPollDevice();
-	auto key=FsInkey();
-	auto c=FsInkeyChar();
+	auto key = FsInkey();
+	auto c = FsInkeyChar();
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	std::string targetWord = wordBank[randWord];
 	auto len = targetWord.size();
 	char letters[256];
-	strcpy(letters, targetWord.c_str()); 
+	strcpy(letters, targetWord.c_str());
 
 	inputStr = textInput.str.GetPointer();
-	textInput.RunOneStep(key,c);
-	
+	textInput.RunOneStep(key, c);
+
 	drawBackground();
 	drawForeground();
-	drawRover(); 
-	
+	drawRover();
+
 	drawObstacles(letters);
 	moveObstacle1();
 
@@ -376,27 +376,27 @@ void Mars::RunOneStep(void){
 	int time_init, time_final = 0;
 	time_init = time(NULL); // time how long the player lasts
 
-	if(FSKEY_ESC == key){
+	if (FSKEY_ESC == key) {
 		ReturnToMenu();
 		term = true;
 	}
 
-	if(FSKEY_ENTER == key){
-		if(inputStr.GetPointer() == targetWord && rover == 0){
-	
+	if (FSKEY_ENTER == key) {
+		if (inputStr.GetPointer() == targetWord && rover == 0) {
+
 			// vel_x = vel * sin(angle);
 			// vel_y = -1 * vel * cos(angle);
 			// rover = 1;
-			initiate_jump = 1; 
+			initiate_jump = 1;
 
 			auto completeTime = FsPassedTime();
-			std::cout << "Completion time: " << completeTime*0.001 << " seconds." << std::endl;
+			std::cout << "Completion time: " << completeTime * 0.001 << " seconds." << std::endl;
 
 		}
 		textInput.str.CleanUp();
 		inputStr.CleanUp();
 	}
-	
+
 	if (initiate_jump == 1) // jump initiated meaning word was typed correctly and user selected 'Enter' 
 	{
 		changeWord = true;
@@ -407,9 +407,9 @@ void Mars::RunOneStep(void){
 			vel_y = -1 * vel * cos(angle);
 			rover = 1; // set rover to jumping
 			initiate_jump = 0; // return to no jump initiated to wait for next correctly typed word
-			
-			speed+=0.5;
-			
+
+			speed += 0.5;
+
 		}
 	}
 
@@ -417,45 +417,46 @@ void Mars::RunOneStep(void){
 	{
 		jumpRover();
 	}
-	
+
 	// check if rover has hit an obstacle
 	if (prevCheck == 0 && checkObstacle() == 1 && initiate_jump == 0)
 	{
 		// std::cout << "Collision" << std::endl;
 		time_final = time(NULL); // final time 
 		numLives--;
-	}	
+	}
 
 	prevCheck = checkObstacle();
 
-	if(numLives == 0){
+	if (numLives == 0) {
 		//You Lost animation
 		drawYouLost();
 		term = true;
 	}
 
-	if(x1 + png[2].wid <= 100.0 && changeWord == true){
-		if(wordCount < 10){
+	if (x1 + png[2].wid <= 100.0 && changeWord == true) {
+		if (wordCount < 10) {
 			wordCount++;
 			randWord = (rand() % (65));
 			changeWord = false;
 		}
 	}
-	
-	if(wordCount >= 10){
+
+	if (wordCount >= 10) {
 		//Winning animation
 		drawYouWon();
 		int level = GetData();
 		int points = GetData();
 		std::cout << "level = " << level << std::endl;
-		if(level <= 151 && level != 2 && level != 3 && level != 4){
-			SaveGame(2, 2);
+
+		// changed level <= 151 to 1
+		if (level <= 1 && level != 2 && level != 3 && level != 4) {
+			SaveGame(1, 1);
 		}
 		term = true;
 	}
-	
+
 	FsSwapBuffers();
 	// FsSleep(25); // 25 milliseconds
 }
-
 

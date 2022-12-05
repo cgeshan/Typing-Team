@@ -4,22 +4,67 @@
 GLuint OverworldTextureId[12];
 
 //Point Call (wip)
-void GetData()
+/*
+void GameData::SaveGame(int level, int points) {
+	FILE* fp = fopen("game.txt", "w");
+
+	if (nullptr != fp) {
+		FILE* File;
+		File = fopen("game.txt", "w+");
+		fprintf(File, "%i\n%i", level, points);
+		fclose(File);
+	}
+}
+
+int GameData::GetDataLevel(void)
 {
-	int level;
+	int level = 0;
 	FILE* fp = fopen("game.txt", "r");
 	if (nullptr != fp)
 	{
-		char newpoints[256];
+		char str[256];
 		int lineNum = 1;
-		while (nullptr != fgets(newpoints, 255, fp))
+		while (nullptr != fgets(str, 255, fp))
 		{
-			newpoints[255] = 0;
+			str[255] = 0;
+			printf(str);
 			lineNum++;
 		}
 		fclose(fp);
+
+		if (str[0] == '1' || str[0] == '2' || str[0] == '3' || str[0] == '4')
+		{
+			if (str[0] == 49)
+			{
+				level = 1;
+			}
+			else if (str[0] == 50)
+			{
+				level = 2;
+			}
+			else if (str[0] == 51)
+			{
+				level = 3;
+			}
+			else if (str[0] == 52)
+			{
+				level = 4;
+			}
+			//printf("level %d", level);
+		}
 	}
+
+	else
+	{
+		level = 0;
+	}
+	return level;
 }
+int GameData::GetDataPoints(void)
+{
+	return 0;
+}
+*/
 
 //BG Items
 void GameData::DrawBG()
@@ -798,6 +843,11 @@ void GameData::Run(void){
 		}
 
 		if(game.gameState == 4 && game.px >= 650 && game.py >= 400){
+
+			//Send Point Data (wip)
+			/*
+			printf("%d", GetDataLevel());
+			*/
 			std::cout << "At portal, now leaving overworld." << std::endl;
 			terminate = true;
 			break;

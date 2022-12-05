@@ -13,7 +13,7 @@ GLuint texId[14];
 
 int Menu::GetData(void)
 {
-	int level;
+	int level = 0;
 	FILE* fp = fopen("game.txt", "r");
 	if (nullptr != fp)
 	{
@@ -27,7 +27,7 @@ int Menu::GetData(void)
 			lineNum++;
 		}
 		fclose(fp);
-		
+
 		if (str[0] == '1' || str[0] == '2' || str[0] == '3' || str[0] == '4')
 		{
 			if (str[0] == 49)
@@ -48,7 +48,7 @@ int Menu::GetData(void)
 			}
 		}
 	}
-	
+
 	else
 	{
 		level = 0;
@@ -56,10 +56,10 @@ int Menu::GetData(void)
 	return level;
 }
 
-void Menu::SaveGame(int level, int points){
+void Menu::SaveGame(int level, int points) {
 	FILE* fp = fopen("game.txt", "w");
 
-	if (nullptr != fp){
+	if (nullptr != fp) {
 		FILE* File;
 		File = fopen("game.txt", "w+");
 		fprintf(File, "%i\n%i", level, points);
@@ -67,7 +67,7 @@ void Menu::SaveGame(int level, int points){
 	}
 }
 
-void Menu::ResetGame(bool&l1,bool&l2,bool&l3,bool&l4)
+void Menu::ResetGame(bool& l1, bool& l2, bool& l3, bool& l4)
 {
 	l1 = 0;
 	l2 = 0;
@@ -83,7 +83,7 @@ void Menu::Initialize(void)
 	x = 100, y = 550;
 	tx1 = 65, tx2 = 325;
 	titly1 = 150, titly2 = 235;
-	move = 1, move2 = -1, bob=-1, bobv=0.3;
+	move = 1, move2 = -1, bob = -1, bobv = 0.3;
 	dt = 0.1;
 	png[0].Decode("BG.png"); //BackGround	
 	png[0].Flip();
@@ -167,13 +167,13 @@ void Menu::drawRover(void)
 
 void Menu::drawTitle()
 {
-	
-	if (titly1 <= 140 || titly1>=160)
+
+	if (titly1 <= 140 || titly1 >= 160)
 	{
 		bob = bob * -1;
 	}
-	titly1 += bobv*bob;
-	titly2 += bobv*bob;
+	titly1 += bobv * bob;
+	titly2 += bobv * bob;
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glRasterPos2i(tx1, titly1);
@@ -326,34 +326,34 @@ void Menu::drawOverworldButton(int posx, int posy)
 	glDisable(GL_BLEND);
 }
 
-void Menu::LoadingGame(int level){
+void Menu::LoadingGame(int level) {
 
 	std::string loadingStr;
-	
-	if (level <= 1)
+
+	if (level == 0)
 	{
 		loadingStr = "Loading into Mars mini-game";
 	}
-	else if (level == 2)
+	else if (level == 1)
 	{
 		loadingStr = "Loading into Galaga mini-game";
 	}
-	else if (level == 3)
+	else if (level == 2)
 	{
 		loadingStr = "Loading into Rockets mini-game";
 	}
-	else if (level == 4)
+	else if (level == 3 || level == 4)
 	{
 		loadingStr = "Loading into Rover mini-game";
 	}
 
 	char loadingChar[256];
-	strcpy(loadingChar, loadingStr.c_str()); 
-	for(int i = 0; i < 75; i++){
-		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	strcpy(loadingChar, loadingStr.c_str());
+	for (int i = 0; i < 75; i++) {
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		drawBackground();
-		
+
 		glColor3f(1, 1, 1);
 		glRasterPos2i(82, 112);
 		YsGlDrawFontBitmap16x24(loadingChar);
@@ -378,22 +378,22 @@ int Menu::playMusic()
 int main(void)
 {
 	FsChangeToProgramDir();
-	
+
 	Menu menu;
 	menu.Initialize();
 	menu.playMusic();
-	
+
 	FsOpenWindow(0, 0, 800, 600, 1);
-	
+
 	int level = 0;
 	bool l1 = 0, l2 = 0, l3 = 0, l4 = 0;
 	bool h1 = 0, h2 = 0, h3 = 0, h4 = 0;
 	int px1, px2, px3, px4, px5, px6, px7;
 	int py1, py2, py3, py4, py5, py6, py7;
-	
-	px1 = 170,px2 = 430,px3 = 195,px4 = 456, px5=695,px6=20, px7= 645;
-	py1 = 320,py2 = 345,py3 = 425,py4 = 445, py5=595,py6=525, py7= 55;
-	
+
+	px1 = 170, px2 = 430, px3 = 195, px4 = 456, px5 = 695, px6 = 20, px7 = 645;
+	py1 = 320, py2 = 345, py3 = 425, py4 = 445, py5 = 595, py6 = 525, py7 = 55;
+
 	level = menu.GetData();
 
 	for (;;)
@@ -401,13 +401,16 @@ int main(void)
 		FsPollDevice();
 		auto key = FsInkey();
 		if (FSKEY_ESC == key)
-		{ 
+		{
 			break;
 		}
 		int lb, mb, rb, mx, my;
+		int evt = FsGetMouseEvent(lb, mb, rb, mx, my);
+
 		if (FSMOUSEEVENT_MOVE == FsGetMouseEvent(lb, mb, rb, mx, my))
 		{
 		}
+
 		if (level == 1)
 		{
 			l1 = 1;
@@ -431,21 +434,21 @@ int main(void)
 			l4 = 1;
 		}
 
-		if (mx >= px1 && mx <= px1 + 163 && my >= py1-75 && my <= py1 && l1)
+		if (mx >= px1 && mx <= px1 + 163 && my >= py1 - 75 && my <= py1 && l1)
 		{
 			h1 = 1;
-			if (lb)
+			if (FSMOUSEEVENT_LBUTTONDOWN == evt)
 			{
 				//Go to overworld first
 				menu.player.End();
 				GameData overworld;
 				overworld.Initialize();
-				
-				for(;;){
-					
+
+				for (;;) {
+
 					overworld.Run();
-					
-					if(true == overworld.terminate){
+
+					if (true == overworld.terminate) {
 						break;
 					}
 					// FsSleep(10);
@@ -455,12 +458,12 @@ int main(void)
 				printf("Mars Mini Game");
 				Mars mars;
 				mars.Initialize();
-				
-				for(;;){
-					
+
+				for (;;) {
+
 					mars.RunOneStep();
-					
-					if(true == mars.term){
+
+					if (true == mars.term) {
 						break;
 					}
 					FsSleep(20);
@@ -469,21 +472,21 @@ int main(void)
 				menu.playMusic();
 			}
 		}
-		else if (mx >= px2 && mx <= px2 + 163 && my >=py2-75 && my <= py2 && l2)
+		else if (mx >= px2 && mx <= px2 + 163 && my >= py2 - 75 && my <= py2 && l2)
 		{
 			h2 = 1;
-			if (lb)
+			if (FSMOUSEEVENT_LBUTTONDOWN == evt)
 			{
 				menu.player.End();
 				// //Go to overworld first
 				GameData overworld;
 				overworld.Initialize();
-				
-				for(;;){
-					
+
+				for (;;) {
+
 					overworld.Run();
-					
-					if(true == overworld.terminate){
+
+					if (true == overworld.terminate) {
 						break;
 					}
 					// FsSleep(10);
@@ -493,12 +496,12 @@ int main(void)
 				printf("Galaga Mini Game");
 				Galaga galaga;
 				galaga.Initialize();
-				
-				for(;;){
-					
+
+				for (;;) {
+
 					galaga.Run();
-					
-					if(true == galaga.terminate){
+
+					if (true == galaga.terminate) {
 						break;
 					}
 					FsSleep(20);
@@ -507,23 +510,23 @@ int main(void)
 				menu.playMusic();
 			}
 		}
-		else if (mx >= px3 && mx <= px3 + 163 && my >= py3-75 && my <= py3 && l3)
+		else if (mx >= px3 && mx <= px3 + 163 && my >= py3 - 75 && my <= py3 && l3)
 		{
 			h3 = 1;
-			if (lb)
+			if (FSMOUSEEVENT_LBUTTONDOWN == evt)
 			{
 				menu.player.End();
 				// //Go to overworld first
 				GameData overworld;
 				overworld.Initialize();
-				
-				for(;;){
-					
+
+				for (;;) {
+
 					overworld.Run();
-					
-					if(true == overworld.terminate){
+
+					if (true == overworld.terminate) {
 						break;
-		
+
 					}
 					// FsSleep(10);
 				}
@@ -532,12 +535,12 @@ int main(void)
 				printf("Rockets Mini Game");
 				Rockets rocket;
 				rocket.Initialize();
-				
-				for(;;){
-					
+
+				for (;;) {
+
 					rocket.RunOneStep();
-					
-					if(true == rocket.terminate){
+
+					if (true == rocket.terminate) {
 						break;
 					}
 					FsSleep(20);
@@ -546,21 +549,21 @@ int main(void)
 				menu.playMusic();
 			}
 		}
-		else if (mx >= px4 && mx <= px4 + 163 && my >= py4-75 && my <= py4 && l4)
+		else if (mx >= px4 && mx <= px4 + 163 && my >= py4 - 75 && my <= py4 && l4)
 		{
 			h4 = 1;
-			if (lb)
+			if (FSMOUSEEVENT_LBUTTONDOWN == evt)
 			{
 				menu.player.End();
 				// //Go to overworld first
 				GameData overworld;
 				overworld.Initialize();
-				
-				for(;;){
-					
+
+				for (;;) {
+
 					overworld.Run();
-					
-					if(true == overworld.terminate){
+
+					if (true == overworld.terminate) {
 						break;
 					}
 					// FsSleep(10);
@@ -570,12 +573,12 @@ int main(void)
 				printf("Rover Mini Game");
 				Rover rover;
 				rover.Initialize();
-				
-				for(;;){
-					
+
+				for (;;) {
+
 					rover.Run();
-					
-					if(true == rover.terminate){
+
+					if (true == rover.terminate) {
 						break;
 					}
 					FsSleep(20);
@@ -586,34 +589,50 @@ int main(void)
 		}
 		else if (mx >= px6 && mx <= px6 + 125 && my >= py6 - 144 && my <= py6)
 		{
-			if (lb)
+			if (FSMOUSEEVENT_LBUTTONDOWN == evt)
 			{
 				menu.player.End();
 				//Overworld
 				printf("Overworld");
 				GameData overworld;
 				overworld.Initialize();
-				
-				for(;;){
-					
+
+				for (;;) {
+
 					overworld.Run();
-					
-					if(true == overworld.terminate){
+
+					if (true == overworld.terminate) {
 						break;
 					}
 				}
 				menu.LoadingGame(level);
+
 				//Go to whatever highest available game is. Pick up where you left off
-				if (level <= 1)
+				if (level == 0)
 				{
 					Mars mars;
 					mars.Initialize();
-					
-					for(;;){
-						
+
+					for (;;) {
+
 						mars.RunOneStep();
-						
-						if(true == mars.term){
+
+						if (true == mars.term) {
+							break;
+						}
+						FsSleep(20);
+					}
+				}
+				else if (level == 1)
+				{
+					Galaga galaga;
+					galaga.Initialize();
+
+					for (;;) {
+
+						galaga.Run();
+
+						if (true == galaga.terminate) {
 							break;
 						}
 						FsSleep(20);
@@ -621,56 +640,41 @@ int main(void)
 				}
 				else if (level == 2)
 				{
-					Galaga galaga;
-					galaga.Initialize();
-					
-					for(;;){
-						
-						galaga.Run();
-						
-						if(true == galaga.terminate){
-							break;
-						}
-						FsSleep(20);
-					}
-				}
-				else if (level == 3)
-				{
 					Rockets rockets;
 					rockets.Initialize();
-					
-					for(;;){
-						
+
+					for (;;) {
+
 						rockets.RunOneStep();
-						
-						if(true == rockets.terminate){
+
+						if (true == rockets.terminate) {
 							break;
 						}
 						FsSleep(20);
 					}
 				}
-				else if (level == 4)
-					{
-						Rover rover;
-						rover.Initialize();
-						
-						for(;;){
-							
-							rover.Run();
-							
-							if(true == rover.terminate){
-								break;
-							}
-							FsSleep(20);
+				else if (level == 3 || level == 4)
+				{
+					Rover rover;
+					rover.Initialize();
+
+					for (;;) {
+
+						rover.Run();
+
+						if (true == rover.terminate) {
+							break;
 						}
+						FsSleep(20);
 					}
+				}
 				level = menu.GetData();
 				menu.playMusic();
 			}
 		}
 		else if (mx >= px5 && mx <= px5 + 100 && my >= py5 - 100 && my <= py5)
 		{
-			if (lb)
+			if (FSMOUSEEVENT_LBUTTONDOWN == evt)
 			{
 				//reset
 				printf("Reset");
@@ -681,18 +685,18 @@ int main(void)
 		}
 		else if (mx >= px7 && mx <= px7 + 150 && my >= py7 - 40 && my <= py7)
 		{
-			if (lb)
+			if (FSMOUSEEVENT_LBUTTONDOWN == evt)
 			{
 				//Launch Tutorial
 				printf("Tutorial");
 				Tutorial tut;
 				tut.Initialize();
-				
-				for(;;){
+
+				for (;;) {
 					tut.Draw();
 					tut.RunOneStep();
-					
-					if(true == tut.terminate){
+
+					if (true == tut.terminate) {
 						break;
 					}
 					FsSleep(20);
@@ -703,7 +707,7 @@ int main(void)
 		{
 			h1 = 0, h2 = 0, h3 = 0, h4 = 0;
 		}
-		
+
 		menu.drawBackground();
 		menu.drawTitle();
 		menu.drawLevel1(px1, py1, l1, h1);
@@ -711,12 +715,12 @@ int main(void)
 		menu.drawLevel3(px3, py3, l3, h3);
 		menu.drawLevel4(px4, py4, l4, h4);
 		menu.drawResetButton(px5, py5);
-		menu.drawOverworldButton(px6,py6);
-		menu.drawTutorialButton(px7,py7);
+		menu.drawOverworldButton(px6, py6);
+		menu.drawTutorialButton(px7, py7);
 		menu.drawRover();
 		FsSwapBuffers();
 		FsSleep(20);
 	}
-	
+
 	return 0;
 }

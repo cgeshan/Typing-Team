@@ -19,9 +19,9 @@ void Galaga::Initialize()
 	laserY = -1000;
 	numHit = 0;
 	numLives = 3;
-    terminate = false;
+	terminate = false;
 
-    imgdat.firstRenderingPass = true;
+	imgdat.firstRenderingPass = true;
 	imgdat.png[0].Decode("Player_Ship.png");
 	imgdat.png[1].Decode("Enemy_Ship.png");
 }
@@ -77,7 +77,7 @@ void Galaga::drawPlayer()
 	glVertex2i(278 + imgdat.png[0].wid, imgdat.png[0].hei + 450 - 50);
 
 	glTexCoord2d(1.0, 0.0);
-	glVertex2i(278 + imgdat.png[0].wid , 450);
+	glVertex2i(278 + imgdat.png[0].wid, 450);
 
 	glEnd();
 
@@ -97,7 +97,7 @@ void Galaga::drawWords(char word[], int arraySize)
 	{
 		start = start + (17.5 * (4 - arraySize));
 	}
-	
+
 	if (locationW >= 340.0)
 	{
 		locationW = 0.0;
@@ -174,7 +174,7 @@ void Galaga::shootEnemy()
 		laserY = 500;
 	}
 
-	while(laserY > locationW){
+	while (laserY > locationW) {
 		laserY = laserY - 2;
 		glColor3ub(255, 0, 0);
 		glBegin(GL_LINES);
@@ -196,9 +196,9 @@ void Galaga::shootEnemy()
 	}
 }
 
-void Galaga::drawYouLost(){
-	for(int i = 0; i < 150; i++){
-		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+void Galaga::drawYouLost() {
+	for (int i = 0; i < 150; i++) {
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		drawBackground();
 
 		glRasterPos2i(62, 62);
@@ -211,8 +211,8 @@ void Galaga::drawYouLost(){
 		FsSleep(20);
 	}
 
-	for(int i = 0; i < 150; i++){
-		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	for (int i = 0; i < 150; i++) {
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		drawBackground();
 
 		glRasterPos2i(62, 62);
@@ -223,9 +223,9 @@ void Galaga::drawYouLost(){
 	}
 }
 
-void Galaga::drawYouWon(){
-	for(int i = 0; i < 150; i++){
-		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+void Galaga::drawYouWon() {
+	for (int i = 0; i < 150; i++) {
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		drawBackground();
 
 		glRasterPos2i(62, 62);
@@ -238,8 +238,8 @@ void Galaga::drawYouWon(){
 		FsSleep(20);
 	}
 
-	for(int i = 0; i < 150; i++){
-		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	for (int i = 0; i < 150; i++) {
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		drawBackground();
 
 		glRasterPos2i(62, 62);
@@ -250,12 +250,12 @@ void Galaga::drawYouWon(){
 	}
 }
 
-void Galaga::ReturnToMenu(void){
-	for(int i = 0; i < 50; i++){
-		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+void Galaga::ReturnToMenu(void) {
+	for (int i = 0; i < 50; i++) {
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		drawBackground();
-		
+
 		glColor3f(1, 1, 1);
 		glRasterPos2i(82, 112);
 		YsGlDrawFontBitmap16x24("Now returning to the Main Menu");
@@ -265,12 +265,12 @@ void Galaga::ReturnToMenu(void){
 	}
 }
 
-void Galaga::drawRemainingLives(){
+void Galaga::drawRemainingLives() {
 
 	std::string strNum = std::to_string(numLives);
 	std::string strLives = "Remaining Lives: " + strNum;
 	char livesDisplay[256];
-	strcpy(livesDisplay, strLives.c_str()); 
+	strcpy(livesDisplay, strLives.c_str());
 
 	glRasterPos2i(500, 62);
 	YsGlDrawFontBitmap12x16(livesDisplay);
@@ -278,13 +278,13 @@ void Galaga::drawRemainingLives(){
 }
 
 void Galaga::drawInput(TextInput in, TextString str) {
-	glRasterPos2i(100,62);
-	
-	auto copy=str;
-	if(0==time(nullptr)%2){
+	glRasterPos2i(100, 62);
+
+	auto copy = str;
+	if (0 == time(nullptr) % 2) {
 		copy.Add('|');
 	}
-	else{
+	else {
 		copy.Add('_');
 	}
 	YsGlDrawFontBitmap16x24(copy.GetPointer());
@@ -292,7 +292,7 @@ void Galaga::drawInput(TextInput in, TextString str) {
 
 int Galaga::GetData(void)
 {
-	int level;
+	int level = 0;
 	FILE* fp = fopen("game.txt", "r");
 	if (nullptr != fp)
 	{
@@ -305,7 +305,7 @@ int Galaga::GetData(void)
 			lineNum++;
 		}
 		fclose(fp);
-		
+
 		if (str[0] == '1' || str[0] == '2' || str[0] == '3' || str[0] == '4')
 		{
 			if (str[0] == 49)
@@ -327,7 +327,7 @@ int Galaga::GetData(void)
 			//printf("level %d", level);
 		}
 	}
-	
+
 	else
 	{
 		level = 0;
@@ -335,10 +335,10 @@ int Galaga::GetData(void)
 	return level;
 }
 
-void Galaga::SaveGame(int level, int points){
+void Galaga::SaveGame(int level, int points) {
 	FILE* fp = fopen("game.txt", "w");
 
-	if (nullptr != fp){
+	if (nullptr != fp) {
 		FILE* File;
 		File = fopen("game.txt", "w+");
 		fprintf(File, "%i\n%i", level, points);
@@ -401,7 +401,7 @@ void RenderGalaga(void* incoming)
 
 	}
 
-	if(game.wordCount < 10){
+	if (game.wordCount < 10) {
 		std::string targetWord = game.wordBank[game.randWord];
 		auto len = targetWord.size();
 		char letters[256];
@@ -414,39 +414,39 @@ void RenderGalaga(void* incoming)
 		game.drawRemainingLives();
 
 		//game.drawInput(game.textInput, game.inputStr);
-		
+
 		//to draw on window changes:
 		game.textInput.Draw();
-		
+
 	}
 
 	FsSwapBuffers();
 }
 
-void Galaga::Run(void){
-    Galaga g;
-    g.Initialize();
+void Galaga::Run(void) {
+	Galaga g;
+	g.Initialize();
 	g.playMusic();
 
-    FsRegisterOnPaintCallBack(RenderGalaga, &g);
+	FsRegisterOnPaintCallBack(RenderGalaga, &g);
 
 	srand(time(NULL));
 	g.randWord = (rand() % (65));
-    	
+
 	for (;;)
 	{
 		FsPollDevice();
-        auto key = FsInkey();
-        auto c=FsInkeyChar();    
-        inputStr = textInput.str.GetPointer();
+		auto key = FsInkey();
+		auto c = FsInkeyChar();
+		inputStr = textInput.str.GetPointer();
 
-        glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-        textInput.RunOneStep(key,c);
+		textInput.RunOneStep(key, c);
 		g.textInput.RunOneStep(key, c);
 
-        // textInput.Draw();
-        // std::cout << inputStr.GetPointer() << std::endl;
+		// textInput.Draw();
+		// std::cout << inputStr.GetPointer() << std::endl;
 
 		if (FSKEY_ESC == key)
 		{
@@ -456,52 +456,52 @@ void Galaga::Run(void){
 		}
 
 		// std::cout << g.numHit << std::endl;
-		if(g.numLives == 0){
-		//You Lost animation
+		if (g.numLives == 0) {
+			//You Lost animation
 			drawYouLost();
 			terminate = true;
 			break;
 		}
 
-        if (g.numHit >= 10)
-        {
-            drawYouWon();
+		if (g.numHit >= 10)
+		{
+			drawYouWon();
 			int level = g.GetData();
 			int points = g.GetData();
-			if(level == 2){
-				g.SaveGame(3, 3);
+			if (level == 1) {
+				g.SaveGame(2, 2);
 			}
 			terminate = true; // Go to Overworld
 			break;
-        }
-		
-		std::string targetWord = g.wordBank[g.randWord];
-		if(FSKEY_ENTER == key){
+		}
 
-            if (inputStr.GetPointer() == targetWord) 
-            {
+		std::string targetWord = g.wordBank[g.randWord];
+		if (FSKEY_ENTER == key) {
+
+			if (inputStr.GetPointer() == targetWord)
+			{
 				g.wordState = 0;
 				g.locationW = 0.0;
 				g.enemyState = 0;
 				g.wordCount++;
 				g.randWord = (rand() % (65));
-                auto completeTime = FsPassedTime();
-                std::cout << "Completion time: " << completeTime*0.001 << " seconds." << std::endl;
+				auto completeTime = FsPassedTime();
+				std::cout << "Completion time: " << completeTime * 0.001 << " seconds." << std::endl;
 				g.velE += 0.1;
 				g.velW += 0.1;
-				
-            }
-            // if(g.wordCount >= sizeof(g.wordBank)/sizeof(g.wordBank[0])){
-            //     terminate = true;
-            //     break;
-            // }
-            textInput.str.CleanUp();
-            inputStr.CleanUp();
+
+			}
+			// if(g.wordCount >= sizeof(g.wordBank)/sizeof(g.wordBank[0])){
+			//     terminate = true;
+			//     break;
+			// }
+			textInput.str.CleanUp();
+			inputStr.CleanUp();
 
 			g.textInput.str.CleanUp();
 			g.inputStr.CleanUp();
 			// g.wordState = 2;
-	    }
+		}
 		FsPushOnPaintEvent();
 		FsSleep(10);
 	}

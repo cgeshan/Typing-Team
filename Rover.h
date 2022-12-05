@@ -23,20 +23,20 @@ public:
 class Rover
 {
 public:
-	int wordState, locationW, locationS, locationF1, locationF2, locationR, velS, velW, count, numLives, randWord, wordCount=0;
+	int wordState, locationW, locationS, locationF1, locationF2, locationR, velS, velW, count, numLives, randWord, wordCount = 0;
 	bool changeWords = false;
 	RoverImageData imgdat;
 
 	YsSoundPlayer player;
 	YsSoundPlayer::SoundData wav;
-	
+
 	//Music
 	int playMusic();
 
-    TextInput textInput;
-  	TextString inputStr;
+	TextInput textInput;
+	TextString inputStr;
 
-    std::string wordBank[66] = {"asteroid",
+	std::string wordBank[66] = { "asteroid",
 								"astronaut",
 								"astronomer",
 								"astronomy",
@@ -102,9 +102,9 @@ public:
 								"waning",
 								"waxing",
 								"zodiac"
-								};
+	};
 
-    bool terminate = false;
+	bool terminate = false;
 
 	void Initialize();
 	void drawBackground();
@@ -115,7 +115,7 @@ public:
 	void moveRover1();
 	int GetData(void);
 	void SaveGame(int level, int points);
-    void Run();
+	void Run();
 	void drawYouLost();
 	void drawYouWon();
 	void drawRemainingLives();

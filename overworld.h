@@ -42,7 +42,7 @@ public:
 	void GeneratePlatforms();
 	void CheckCollision();
 	int platx1, platx2, platx3, platy1, platy2, platy3;
-	
+
 	//Player Movement
 	void DrawPlayer();
 	void MovePlayer();
@@ -78,10 +78,14 @@ public:
 	bool gameEnd = false;
 	bool terminate = false;
 
+	//Save Game (wip)
+	/*
+	void SaveGame(int level, int points);
+	int GetDataLevel();
+	int GetDataPoints();
+	*/
+
 	void Initialize(void);
 	void Run(void);
 };
-
-/*}*/
-#endif
-
+#endif 

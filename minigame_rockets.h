@@ -17,13 +17,13 @@ public:
 
 	YsSoundPlayer player;
 	YsSoundPlayer::SoundData wav;
-	
+
 	//Music
 	int playMusic();
-    TextInput textInput;
-  	TextString inputStr;
+	TextInput textInput;
+	TextString inputStr;
 
-    std::string wordBank[66] = {"asteroid",
+	std::string wordBank[66] = { "asteroid",
 								"astronaut",
 								"astronomer",
 								"astronomy",
@@ -89,7 +89,7 @@ public:
 								"waning",
 								"waxing",
 								"zodiac"
-								};
+	};
 	int wordCount, randWord;
 	bool terminate = false;
 
@@ -108,7 +108,7 @@ public:
 	int checkRockets(void);
 	int GetData(void);
 	void SaveGame(int level, int points);
-    void RunOneStep(void);
+	void RunOneStep(void);
 	void drawYouLost();
 	void drawYouWon();
 	void ReturnToMenu();

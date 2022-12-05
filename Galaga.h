@@ -23,20 +23,20 @@ public:
 class Galaga
 {
 public:
-	int enemyState, wordState, laserX, laserY, numHit, numLives, randWord, wordCount=0;
+	int enemyState, wordState, laserX, laserY, numHit, numLives, randWord, wordCount = 0;
 	double locationE, locationW, velE, velW;
 	GalagaImageData imgdat;
 
 	YsSoundPlayer player;
 	YsSoundPlayer::SoundData wav;
-	
+
 	//Music
 	int playMusic();
 
-    TextInput textInput;
-  	TextString inputStr;
+	TextInput textInput;
+	TextString inputStr;
 
-    std::string wordBank[66] = {"asteroid",
+	std::string wordBank[66] = { "asteroid",
 								"astronaut",
 								"astronomer",
 								"astronomy",
@@ -102,9 +102,9 @@ public:
 								"waning",
 								"waxing",
 								"zodiac"
-								};
+	};
 
-    bool terminate = false;
+	bool terminate = false;
 
 	void Initialize();
 	void drawBackground();
@@ -113,7 +113,7 @@ public:
 	void wordInput();
 	void drawEnemy();
 	void shootEnemy();
-    void Run(void);
+	void Run(void);
 	void drawYouLost();
 	void drawYouWon();
 	int GetData(void);
@@ -126,4 +126,3 @@ public:
 
 /*}*/
 #endif
-

@@ -16,14 +16,14 @@ public:
 
 	YsSoundPlayer player;
 	YsSoundPlayer::SoundData wav;
-	
+
 	//Music
 	int playMusic();
-	
-    TextInput textInput;
-  	TextString inputStr;
 
-    std::string wordBank[66] = {"asteroid",
+	TextInput textInput;
+	TextString inputStr;
+
+	std::string wordBank[66] = { "asteroid",
 								"astronaut",
 								"astronomer",
 								"astronomy",
@@ -89,12 +89,12 @@ public:
 								"waning",
 								"waxing",
 								"zodiac"
-								};
+	};
 	int wordCount, randWord;
 
 	// player variables
 	double angle;
-	int rover, start_x, start_y, numLives; 
+	int rover, start_x, start_y, numLives;
 	double rover_x, rover_y;
 	double vel, vel_x, vel_y, dt;
 
@@ -104,7 +104,7 @@ public:
 	int seed[20]; // empty array of 20 values 
 	int index;
 	int initiate_jump, prevCheck;
-    bool term = false;
+	bool term = false;
 	bool changeWord = false;
 
 	void Initialize(void);
@@ -115,10 +115,10 @@ public:
 	void moveObstacle1(void);
 	int GetData(void);
 	void SaveGame(int level, int points);
-	void jumpRover(void); 
+	void jumpRover(void);
 	int checkObstacle(void);
-    void RunOneStep(void);
-    void drawTargetWord(char letters[]);
+	void RunOneStep(void);
+	void drawTargetWord(char letters[]);
 	void drawYouLost();
 	void drawYouWon();
 	void ReturnToMenu();
