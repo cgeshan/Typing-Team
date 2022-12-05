@@ -5,9 +5,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <fstream>
+#include <tuple>
 #include "yspng.h"
-
-//changed level to int level = 0
 
 class Menu
 {
@@ -17,9 +17,13 @@ public:
 	YsSoundPlayer player;
 	YsSoundPlayer::SoundData wav;
 
-	double x, y, dt, tx1, tx2, titly1, titly2, bobv;
+	double x, y, dt,tx1, tx2, titly1, titly2, bobv;
 	int move, move2, bob;
+
 	int level;
+	int points;
+	void SaveGame(int level, int points);
+	std::tuple <int, int> GetData(int level, int points);
 
 	void Initialize(void);
 	int playMusic(void);
@@ -29,16 +33,15 @@ public:
 	void drawOverworldButton(int, int);
 	void drawResetButton(int, int);
 	void drawTutorialButton(int, int);
-	void drawLevel1(int, int, bool, bool);
+	void drawLevel1(int,int, bool, bool);
 	void drawLevel2(int, int, bool, bool);
 	void drawLevel3(int, int, bool, bool);
 	void drawLevel4(int, int, bool, bool);
 	void LoadingGame(int level);
-	void SaveGame(int level, int points);
-	int GetData(void);
-	void ResetGame(bool& l1, bool& l2, bool& l3, bool& l4);
+	void ResetGame(bool&l1,bool&l2,bool&l3,bool&l4);
 
 };
 
 /*}*/
 #endif
+

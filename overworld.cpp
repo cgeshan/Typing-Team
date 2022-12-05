@@ -4,67 +4,31 @@
 GLuint OverworldTextureId[12];
 
 //Point Call (wip)
-/*
-void GameData::SaveGame(int level, int points) {
+std::tuple <int, int> GameData::GetData(int level, int points)
+{
+	GameData gd;
+	std::ifstream infile;
+	infile.open("game.txt", std::ifstream::in);
+	if(infile.good()){
+		infile >> gd.level >> gd.points;
+	}
+
+	std::cout << "level -> " << gd.level << "\npoints -> " << gd.points << std::endl;
+
+	return std::make_tuple(gd.level, gd.points);
+	
+}
+
+void GameData::SaveGame(int level, int points){
 	FILE* fp = fopen("game.txt", "w");
 
-	if (nullptr != fp) {
+	if (nullptr != fp){
 		FILE* File;
 		File = fopen("game.txt", "w+");
-		fprintf(File, "%i\n%i", level, points);
+		fprintf(File, "%i %i", level, points);
 		fclose(File);
 	}
 }
-
-int GameData::GetDataLevel(void)
-{
-	int level = 0;
-	FILE* fp = fopen("game.txt", "r");
-	if (nullptr != fp)
-	{
-		char str[256];
-		int lineNum = 1;
-		while (nullptr != fgets(str, 255, fp))
-		{
-			str[255] = 0;
-			printf(str);
-			lineNum++;
-		}
-		fclose(fp);
-
-		if (str[0] == '1' || str[0] == '2' || str[0] == '3' || str[0] == '4')
-		{
-			if (str[0] == 49)
-			{
-				level = 1;
-			}
-			else if (str[0] == 50)
-			{
-				level = 2;
-			}
-			else if (str[0] == 51)
-			{
-				level = 3;
-			}
-			else if (str[0] == 52)
-			{
-				level = 4;
-			}
-			//printf("level %d", level);
-		}
-	}
-
-	else
-	{
-		level = 0;
-	}
-	return level;
-}
-int GameData::GetDataPoints(void)
-{
-	return 0;
-}
-*/
 
 //BG Items
 void GameData::DrawBG()
@@ -810,6 +774,7 @@ void GameData::Initialize(void){
 	coinstate3 = 1;
 
 	//point total
+	level = 0;
 	points = 0;
 
 	//1, 2,3
@@ -829,6 +794,7 @@ void GameData::Run(void){
 	game.Initialize();
 	game.playMusic();
 	FsRegisterOnPaintCallBack(RenderOverworld, &game);
+	std::tie(game.level, game.points) = game.GetData(game.level, game.points);
 
 	for (;;)
 	{	
@@ -837,17 +803,14 @@ void GameData::Run(void){
 
 		if (FsGetKeyState(FSKEY_ESC))
 		{
+			// game.SaveGame(game.level, game.points);
 			std::cout << "\npressed esc" << std::endl;
 			terminate = true;
 			break;
 		}
 
 		if(game.gameState == 4 && game.px >= 650 && game.py >= 400){
-
-			//Send Point Data (wip)
-			/*
-			printf("%d", GetDataLevel());
-			*/
+			game.SaveGame(game.level, game.points);
 			std::cout << "At portal, now leaving overworld." << std::endl;
 			terminate = true;
 			break;
