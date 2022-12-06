@@ -16,20 +16,20 @@ std::tuple <int, int> Menu::GetData(int level, int points)
 	Menu m;
 	std::ifstream infile;
 	infile.open("game.txt", std::ifstream::in);
-	if(infile.good()){
+	if (infile.good()) {
 		infile >> m.level >> m.points;
 	}
 
 	std::cout << "level -> " << m.level << "\npoints -> " << m.points << std::endl;
 
 	return std::make_tuple(m.level, m.points);
-	
+
 }
 
-void Menu::SaveGame(int level, int points){
+void Menu::SaveGame(int level, int points) {
 	FILE* fp = fopen("game.txt", "w");
 
-	if (nullptr != fp){
+	if (nullptr != fp) {
 		FILE* File;
 		File = fopen("game.txt", "w+");
 		fprintf(File, "%i %i", level, points);
@@ -37,7 +37,7 @@ void Menu::SaveGame(int level, int points){
 	}
 }
 
-void Menu::ResetGame(bool&l1,bool&l2,bool&l3,bool&l4)
+void Menu::ResetGame(bool& l1, bool& l2, bool& l3, bool& l4)
 {
 	l1 = 0;
 	l2 = 0;
@@ -53,7 +53,7 @@ void Menu::Initialize(void)
 	x = 100, y = 550;
 	tx1 = 65, tx2 = 325;
 	titly1 = 150, titly2 = 235;
-	move = 1, move2 = -1, bob=-1, bobv=0.3;
+	move = 1, move2 = -1, bob = -1, bobv = 0.3;
 	dt = 0.1;
 
 	level = 0;
@@ -89,9 +89,11 @@ void Menu::Initialize(void)
 	png[13].Flip();
 	png[14].Decode("tutorial.png"); //Tutorial Button 
 	png[14].Flip();
+	png[15].Decode("BG_fadeout.png"); //BG w/ faded buttons
+	png[15].Flip();
 }
 
-void Menu::drawBackground(void)
+void Menu::drawBackground(int bgnum)
 {
 
 	glShadeModel(GL_SMOOTH); // gradient background 
@@ -114,7 +116,7 @@ void Menu::drawBackground(void)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glRasterPos2i(0, 600 - 1);
-	glDrawPixels(png[0].wid, png[0].hei, GL_RGBA, GL_UNSIGNED_BYTE, png[0].rgba);
+	glDrawPixels(png[bgnum].wid, png[bgnum].hei, GL_RGBA, GL_UNSIGNED_BYTE, png[bgnum].rgba);
 	glDisable(GL_BLEND);
 }
 
@@ -141,13 +143,13 @@ void Menu::drawRover(void)
 
 void Menu::drawTitle()
 {
-	
-	if (titly1 <= 140 || titly1>=160)
+
+	if (titly1 <= 140 || titly1 >= 160)
 	{
 		bob = bob * -1;
 	}
-	titly1 += bobv*bob;
-	titly2 += bobv*bob;
+	titly1 += bobv * bob;
+	titly2 += bobv * bob;
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glRasterPos2i(tx1, titly1);
@@ -300,10 +302,10 @@ void Menu::drawOverworldButton(int posx, int posy)
 	glDisable(GL_BLEND);
 }
 
-void Menu::LoadingGame(int level){
+void Menu::LoadingGame(int level) {
 
 	std::string loadingStr;
-	
+
 	if (level == 1)
 	{
 		loadingStr = "Loading into Mars mini-game";
@@ -322,12 +324,12 @@ void Menu::LoadingGame(int level){
 	}
 
 	char loadingChar[256];
-	strcpy(loadingChar, loadingStr.c_str()); 
-	for(int i = 0; i < 75; i++){
-		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	strcpy(loadingChar, loadingStr.c_str());
+	for (int i = 0; i < 75; i++) {
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		drawBackground();
-		
+		drawBackground(0);
+
 		glColor3f(1, 1, 1);
 		glRasterPos2i(82, 112);
 		YsGlDrawFontBitmap16x24(loadingChar);
@@ -363,21 +365,21 @@ int Menu::playMusic()
 int main(void)
 {
 	FsChangeToProgramDir();
-	
+
 	Menu menu;
 	menu.Initialize();
 	menu.playMusic();
-	
+
 	FsOpenWindow(0, 0, 800, 600, 1);
-	
+
 
 	bool l1 = 0, l2 = 0, l3 = 0, l4 = 0;
 	bool h1 = 0, h2 = 0, h3 = 0, h4 = 0;
 	int px1, px2, px3, px4, px5, px6, px7;
 	int py1, py2, py3, py4, py5, py6, py7;
-	
-	px1 = 170,px2 = 430,px3 = 195,px4 = 456, px5=695,px6=20, px7= 645;
-	py1 = 320,py2 = 345,py3 = 425,py4 = 445, py5=595,py6=525, py7= 55;
+
+	px1 = 170, px2 = 430, px3 = 195, px4 = 456, px5 = 695, px6 = 20, px7 = 645;
+	py1 = 320, py2 = 345, py3 = 425, py4 = 445, py5 = 595, py6 = 525, py7 = 55;
 
 	// std::cout << "level -> " << menu.level << "\npoints -> " << menu.points << std::endl;
 	std::tie(menu.level, menu.points) = menu.GetData(menu.level, menu.points);
@@ -697,21 +699,21 @@ int main(void)
 		{
 			h1 = 0, h2 = 0, h3 = 0, h4 = 0;
 		}
-		
-		menu.drawBackground();
+
+		menu.drawBackground(15);
 		menu.drawTitle();
 		menu.drawLevel1(px1, py1, l1, h1);
 		menu.drawLevel2(px2, py2, l2, h2);
 		menu.drawLevel3(px3, py3, l3, h3);
 		menu.drawLevel4(px4, py4, l4, h4);
 		menu.drawResetButton(px5, py5);
-		menu.drawOverworldButton(px6,py6);
-		menu.drawTutorialButton(px7,py7);
+		menu.drawOverworldButton(px6, py6);
+		menu.drawTutorialButton(px7, py7);
 		menu.drawRover();
 		menu.DrawPointCount();
 		FsSwapBuffers();
 		FsSleep(20);
 	}
-	
+
 	return 0;
 }

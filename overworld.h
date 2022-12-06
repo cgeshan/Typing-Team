@@ -47,7 +47,7 @@ public:
 	void GeneratePlatforms();
 	void CheckCollision();
 	int platx1, platx2, platx3, platy1, platy2, platy3;
-	
+
 	//Player Movement
 	void DrawPlayer();
 	void MovePlayer();
@@ -88,4 +88,3 @@ public:
 
 /*}*/
 #endif
-
