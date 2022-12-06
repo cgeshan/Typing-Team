@@ -27,6 +27,12 @@ class Rover
 public:
 	int wordState, locationW, locationS, locationF1, locationF2, locationR, velS, velW, count, numLives, randWord, wordCount=0;
 	bool changeWords = false;
+	int starx[50];
+	int stary[50];
+	unsigned int starred[50];
+	unsigned int stargreen[50];
+	unsigned int starblue[50];
+
 	RoverImageData imgdat;
 
 	YsSoundPlayer player;

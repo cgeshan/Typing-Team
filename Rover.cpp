@@ -56,37 +56,69 @@ void Rover::Initialize()
     imgdat.png[3].Decode("Rock2Gray.png");
     imgdat.png[4].Decode("EnemyCar.png");
     imgdat.png[5].Decode("PlayerCar.png");
-	imgdat.png[6].Decode("Stars.png");
+	//imgdat.png[6].Decode("Stars.png");
+
+	for (int i = 0; i < 50; i++)
+	{
+		starx[i] = rand() % 800;
+		stary[i] = rand() % 450;
+
+		starred[i] = rand() % 256;
+		stargreen[i] = rand() % 256;
+		starblue[i] = rand() % 256;
+	}
 }
 
 void Rover::drawBackground()
 {
+	glClearColor(0, 0, 0, 0);
+
+	//glEnable(GL_BLEND);
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	//glEnable(GL_TEXTURE_2D);
+	//glBindTexture(GL_TEXTURE_2D, RoverTextureId[6]);
+
+	//glBegin(GL_QUADS);
+
+	//glTexCoord2d(0.0, 0.0);
+	//glVertex2i(0, 0);
+
+	//glTexCoord2d(0.0, 1.0);
+	//glVertex2i(0, 600);
+
+	//glTexCoord2d(1.0, 1.0);
+	//glVertex2i(800, 600);
+
+	//glTexCoord2d(1.0, 0.0);
+	//glVertex2i(800, 0);
+
+	//glEnd();
+
+	//glDisable(GL_TEXTURE_2D);
+	//glDisable(GL_BLEND);
+
+	for (int star = 0; star < 50; star++)
+	{
+		glBegin(GL_QUADS);
+		glColor3ub(starred[star], stargreen[star], starblue[star]);
+
+		glVertex2i(starx[star] + 1, stary[star] + 1);
+		glVertex2i(starx[star] - 1, stary[star] + 1);
+		glVertex2i(starx[star] - 1, stary[star] - 1);
+		glVertex2i(starx[star] + 1, stary[star] - 1);
+
+		starx[star] = starx[star] - velS;
+
+		if (starx[star] < 0)
+		{
+			starx[star] = 800;
+		}
+
+		glEnd();
+	}
+
 	glColor4d(1.0, 1.0, 1.0, 1.0);
-
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, RoverTextureId[6]);
-
-	glBegin(GL_QUADS);
-
-	glTexCoord2d(0.0, 0.0);
-	glVertex2i(0, 0);
-
-	glTexCoord2d(0.0, 1.0);
-	glVertex2i(0, 600);
-
-	glTexCoord2d(1.0, 1.0);
-	glVertex2i(800, 600);
-
-	glTexCoord2d(1.0, 0.0);
-	glVertex2i(800, 0);
-
-	glEnd();
-
-	glDisable(GL_TEXTURE_2D);
-	glDisable(GL_BLEND);
 	
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
