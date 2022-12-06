@@ -441,8 +441,8 @@ void Mars::RunOneStep(void){
 		//Winning animation
 		drawYouWon();
 		std::cout << "level = " << level << std::endl;
-		if(level == 1){
-			SaveGame(2, points);
+		if(level <= 1){
+			SaveGame(1, points);
 		}
 		term = true;
 	}

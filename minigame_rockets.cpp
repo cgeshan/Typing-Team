@@ -404,8 +404,8 @@ void Rockets::RunOneStep(void){
 		//Winning animation
 		drawYouWon();
 		std::cout << "level = " << level << std::endl;
-		if(level == 3){
-			SaveGame(4, points);
+		if(level <= 3){
+			SaveGame(3, points);
 		}
 		terminate = true;
 	}

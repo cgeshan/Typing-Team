@@ -24,6 +24,7 @@ public:
 	int points;
 	void SaveGame(int level, int points);
 	std::tuple <int, int> GetData(int level, int points);
+	void DrawPointCount();
 
 	void Initialize(void);
 	int playMusic(void);

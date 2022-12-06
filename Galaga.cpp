@@ -463,8 +463,8 @@ void Galaga::Run(void){
         if (g.numHit >= 10)
         {
             drawYouWon();
-			if(level == 2){
-				g.SaveGame(3, g.points);
+			if(level <= 2){
+				g.SaveGame(2, g.points);
 			}
 			terminate = true; // Go to Overworld
 			break;

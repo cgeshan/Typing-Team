@@ -304,7 +304,7 @@ void Menu::LoadingGame(int level){
 
 	std::string loadingStr;
 	
-	if (level <= 1)
+	if (level == 1)
 	{
 		loadingStr = "Loading into Mars mini-game";
 	}
@@ -335,6 +335,17 @@ void Menu::LoadingGame(int level){
 		FsSwapBuffers();
 		FsSleep(20);
 	}
+}
+
+void Menu::DrawPointCount()
+{
+	glRasterPos2i(600, 90);
+	char pointstxt[256];
+	std::sprintf(pointstxt, "%d", points);
+	YsGlDrawFontBitmap16x20("Points: ");
+
+	glRasterPos2i(720, 90);
+	YsGlDrawFontBitmap16x20(pointstxt);
 }
 
 int Menu::playMusic()
@@ -417,18 +428,18 @@ int main(void)
 			{
 				//Go to overworld first
 				menu.player.End();
-				GameData overworld;
-				overworld.Initialize();
+				// GameData overworld;
+				// overworld.Initialize();
 
-				for (;;) {
+				// for (;;) {
 
-					overworld.Run();
+				// 	overworld.Run();
 
-					if (true == overworld.terminate) {
-						break;
-					}
-					// FsSleep(10);
-				}
+				// 	if (true == overworld.terminate) {
+				// 		break;
+				// 	}
+				// 	// FsSleep(10);
+				// }
 				menu.LoadingGame(1);
 				//Mini Game 1
 				printf("Mars Mini Game");
@@ -455,18 +466,18 @@ int main(void)
 			{
 				menu.player.End();
 				// //Go to overworld first
-				GameData overworld;
-				overworld.Initialize();
+				// GameData overworld;
+				// overworld.Initialize();
 
-				for (;;) {
+				// for (;;) {
 
-					overworld.Run();
+				// 	overworld.Run();
 
-					if (true == overworld.terminate) {
-						break;
-					}
-					// FsSleep(10);
-				}
+				// 	if (true == overworld.terminate) {
+				// 		break;
+				// 	}
+				// 	// FsSleep(10);
+				// }
 				menu.LoadingGame(2);
 				//Mini Game 2
 				printf("Galaga Mini Game");
@@ -493,19 +504,19 @@ int main(void)
 			{
 				menu.player.End();
 				// //Go to overworld first
-				GameData overworld;
-				overworld.Initialize();
+				// GameData overworld;
+				// overworld.Initialize();
 
-				for (;;) {
+				// for (;;) {
 
-					overworld.Run();
+				// 	overworld.Run();
 
-					if (true == overworld.terminate) {
-						break;
+				// 	if (true == overworld.terminate) {
+				// 		break;
 
-					}
-					// FsSleep(10);
-				}
+				// 	}
+				// 	// FsSleep(10);
+				// }
 				menu.LoadingGame(3);
 				//Mini Game 3
 				printf("Rockets Mini Game");
@@ -532,18 +543,18 @@ int main(void)
 			{
 				menu.player.End();
 				// //Go to overworld first
-				GameData overworld;
-				overworld.Initialize();
+				// GameData overworld;
+				// overworld.Initialize();
 
-				for (;;) {
+				// for (;;) {
 
-					overworld.Run();
+				// 	overworld.Run();
 
-					if (true == overworld.terminate) {
-						break;
-					}
-					// FsSleep(10);
-				}
+				// 	if (true == overworld.terminate) {
+				// 		break;
+				// 	}
+				// 	// FsSleep(10);
+				// }
 				menu.LoadingGame(4);
 				//Mini Game 4
 				printf("Rover Mini Game");
@@ -581,11 +592,11 @@ int main(void)
 						break;
 					}
 				}
-				menu.LoadingGame(menu.level);
 
 				//Go to whatever highest available game is. Pick up where you left off
 				if (menu.level == 0)
 				{
+					menu.LoadingGame(1);
 					Mars mars;
 					mars.Initialize();
 
@@ -601,6 +612,7 @@ int main(void)
 				}
 				else if (menu.level == 1)
 				{
+					menu.LoadingGame(2);
 					Galaga galaga;
 					galaga.Initialize();
 
@@ -616,6 +628,7 @@ int main(void)
 				}
 				else if (menu.level == 2)
 				{
+					menu.LoadingGame(3);
 					Rockets rockets;
 					rockets.Initialize();
 
@@ -631,6 +644,7 @@ int main(void)
 				}
 				else if (menu.level == 3 || menu.level == 4)
 				{
+					menu.LoadingGame(4);
 					Rover rover;
 					rover.Initialize();
 
@@ -694,6 +708,7 @@ int main(void)
 		menu.drawOverworldButton(px6,py6);
 		menu.drawTutorialButton(px7,py7);
 		menu.drawRover();
+		menu.DrawPointCount();
 		FsSwapBuffers();
 		FsSleep(20);
 	}
