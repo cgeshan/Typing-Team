@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string>
+#include <fstream>
+#include <tuple>
 #include "fssimplewindow.h"
 #include "yssimplesound.h"
 #include "ysglfontdata.h"
@@ -23,20 +25,26 @@ public:
 class Rover
 {
 public:
-	int wordState, locationW, locationS, locationF1, locationF2, locationR, velS, velW, count, numLives, randWord, wordCount=0;
+	int wordState, locationW, locationS, locationF1, locationF2, locationR, velS, velW, count, numLives, randWord, wordCount = 0;
 	bool changeWords = false;
+	int starx[50];
+	int stary[50];
+	unsigned int starred[50];
+	unsigned int stargreen[50];
+	unsigned int starblue[50];
+
 	RoverImageData imgdat;
 
 	YsSoundPlayer player;
 	YsSoundPlayer::SoundData wav;
-	
+
 	//Music
 	int playMusic();
 
-    TextInput textInput;
-  	TextString inputStr;
+	TextInput textInput;
+	TextString inputStr;
 
-    std::string wordBank[66] = {"asteroid",
+	std::string wordBank[66] = { "asteroid",
 								"astronaut",
 								"astronomer",
 								"astronomy",
@@ -102,9 +110,15 @@ public:
 								"waning",
 								"waxing",
 								"zodiac"
-								};
+	};
 
-    bool terminate = false;
+	bool terminate = false;
+
+	int level;
+	int points;
+	void DrawPointCount();
+	void SaveGame(int level, int points);
+	std::tuple <int, int> GetData(int level, int points);
 
 	void Initialize();
 	void drawBackground();
@@ -113,9 +127,8 @@ public:
 	void moveForground();
 	void drawRover2();
 	void moveRover1();
-	int GetData(void);
-	void SaveGame(int level, int points);
-    void Run();
+
+	void Run();
 	void drawYouLost();
 	void drawYouWon();
 	void drawRemainingLives();

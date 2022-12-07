@@ -4,20 +4,29 @@
 GLuint OverworldTextureId[12];
 
 //Point Call (wip)
-void GetData()
+std::tuple <int, int> GameData::GetData(int level, int points)
 {
-	int level;
-	FILE* fp = fopen("game.txt", "r");
-	if (nullptr != fp)
-	{
-		char newpoints[256];
-		int lineNum = 1;
-		while (nullptr != fgets(newpoints, 255, fp))
-		{
-			newpoints[255] = 0;
-			lineNum++;
-		}
-		fclose(fp);
+	GameData gd;
+	std::ifstream infile;
+	infile.open("game.txt", std::ifstream::in);
+	if (infile.good()) {
+		infile >> gd.level >> gd.points;
+	}
+
+	std::cout << "level -> " << gd.level << "\npoints -> " << gd.points << std::endl;
+
+	return std::make_tuple(gd.level, gd.points);
+
+}
+
+void GameData::SaveGame(int level, int points) {
+	FILE* fp = fopen("game.txt", "w");
+
+	if (nullptr != fp) {
+		FILE* File;
+		File = fopen("game.txt", "w+");
+		fprintf(File, "%i %i", level, points);
+		fclose(File);
 	}
 }
 
@@ -211,7 +220,7 @@ void GameData::DrawPlatforms()
 }
 void GameData::GeneratePlatforms()
 {
-	if(platstate == 0)
+	if (platstate == 0)
 	{
 		platx1 = rand() % 600;
 		platx2 = rand() % 600;
@@ -233,7 +242,7 @@ void GameData::DrawCoins()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	if(coinstate1 == 1)
+	if (coinstate1 == 1)
 	{
 		glEnable(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, OverworldTextureId[9]);
@@ -257,7 +266,7 @@ void GameData::DrawCoins()
 		glDisable(GL_TEXTURE_2D);
 	}
 
-	if(coinstate2 == 1)
+	if (coinstate2 == 1)
 	{
 		glEnable(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, OverworldTextureId[10]);
@@ -281,7 +290,7 @@ void GameData::DrawCoins()
 		glDisable(GL_TEXTURE_2D);
 	}
 
-	if(coinstate3 == 1)
+	if (coinstate3 == 1)
 	{
 		glEnable(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, OverworldTextureId[11]);
@@ -310,7 +319,7 @@ void GameData::DrawCoins()
 }
 void GameData::GenerateCoins()
 {
-	if(coinvisState == 0)
+	if (coinvisState == 0)
 	{
 		coinx1 = platx1 + 100;
 		coinx2 = platx2 + 100;
@@ -373,15 +382,17 @@ void GameData::DrawPointCount()
 void GameData::DrawPlayer(void)
 {
 	//Left and Right
-	if((FsGetKeyState(FSKEY_RIGHT) || FsGetKeyState(FSKEY_LEFT)) && jumpdrawingstate == 0 && vy >= 0)
+	if ((FsGetKeyState(FSKEY_RIGHT) || FsGetKeyState(FSKEY_LEFT)) && jumpdrawingstate == 0 && vy >= 0)
 	{
+		int bounceAnim = 0;
+
 		glColor4d(1.0, 1.0, 1.0, 1.0);
 
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		glEnable(GL_TEXTURE_2D);
-		if(walktimer > 15)
+		if (walktimer > 15)
 		{
 			glBindTexture(GL_TEXTURE_2D, OverworldTextureId[2]);
 		}
@@ -390,38 +401,55 @@ void GameData::DrawPlayer(void)
 			glBindTexture(GL_TEXTURE_2D, OverworldTextureId[3]);
 
 		}
+		//walk animations
+		if ((walktimer >= 0 && walktimer < 3) || (walktimer >= 15 && walktimer < 18))
+		{
+			bounceAnim = 5;
+		}
+		else if ((walktimer >= 3 && walktimer < 5) || (walktimer >= 18 && walktimer < 20) || (walktimer >= 28 && walktimer < 30) || (walktimer >= 13 && walktimer < 15))
+		{
+			bounceAnim = 2;
+		}
+		else if ((walktimer == 5) || (walktimer == 20) || (walktimer == 27) || (walktimer == 12))
+		{
+			bounceAnim = 1;
+		}
+		else
+		{
+			bounceAnim = 0;
+		}
 
 		glBegin(GL_QUADS);
 
-		if(FsGetKeyState(FSKEY_RIGHT))
+		if (FsGetKeyState(FSKEY_RIGHT))
 		{
 			glTexCoord2d(0.0, 0.0);
-			glVertex2i(0 + px, 0 + py);
+			glVertex2i(0 + px - bounceAnim, 0 + py + bounceAnim);
 
 			glTexCoord2d(0.0, 1.0);
-			glVertex2i(0 + px, imgdat.png[2].hei + py);
+			glVertex2i(0 + px - bounceAnim, imgdat.png[2].hei + py);
 
 			glTexCoord2d(1.0, 1.0);
-			glVertex2i(imgdat.png[2].wid + px, imgdat.png[2].hei + py);
+			glVertex2i(imgdat.png[2].wid + px + bounceAnim, imgdat.png[2].hei + py);
 
 			glTexCoord2d(1.0, 0.0);
-			glVertex2i(imgdat.png[2].wid + px, 0 + py);
+			glVertex2i(imgdat.png[2].wid + px + bounceAnim, 0 + py + bounceAnim);
 
 			glEnd();
 		}
 		else
 		{
 			glTexCoord2d(1.0, 0.0);
-			glVertex2i(0 + px, 0 + py);
+			glVertex2i(0 + px - bounceAnim, 0 + py + bounceAnim);
 
 			glTexCoord2d(1.0, 1.0);
-			glVertex2i(0 + px, imgdat.png[2].hei + py);
+			glVertex2i(0 + px - bounceAnim, imgdat.png[2].hei + py);
 
 			glTexCoord2d(0.0, 1.0);
-			glVertex2i(imgdat.png[2].wid + px, imgdat.png[2].hei + py);
+			glVertex2i(imgdat.png[2].wid + px + bounceAnim, imgdat.png[2].hei + py);
 
 			glTexCoord2d(0.0, 0.0);
-			glVertex2i(imgdat.png[2].wid + px, 0 + py);
+			glVertex2i(imgdat.png[2].wid + px + bounceAnim, 0 + py + bounceAnim);
 
 			glEnd();
 		}
@@ -443,7 +471,7 @@ void GameData::DrawPlayer(void)
 
 		glBegin(GL_QUADS);
 
-		if(facestate == 1)
+		if (facestate == 1)
 		{
 			glTexCoord2d(0.0, 0.0);
 			glVertex2i(0 + px, 0 + py);
@@ -491,7 +519,7 @@ void GameData::DrawPlayer(void)
 
 		glBegin(GL_QUADS);
 
-		if(facestate == 1)
+		if (facestate == 1)
 		{
 			glTexCoord2d(0.0, 0.0);
 			glVertex2i(0 + px, 0 + py);
@@ -657,7 +685,7 @@ void RenderOverworld(void* incoming)
 	{
 		game.imgdat.firstRenderingPass = false; // And, don't do it again.
 
-		for (int i = 0; i < 13 ;++i)
+		for (int i = 0; i < 13;++i)
 		{
 			glGenTextures(1, &OverworldTextureId[i]);  // Reserve one texture identifier
 			glBindTexture(GL_TEXTURE_2D, OverworldTextureId[i]);  // Making the texture identifier current (or bring it to the deck)
@@ -730,7 +758,7 @@ void RenderOverworld(void* incoming)
 	FsSwapBuffers();
 }
 
-void GameData::Initialize(void){
+void GameData::Initialize(void) {
 
 	//inital player positon
 	px = 0;
@@ -765,6 +793,7 @@ void GameData::Initialize(void){
 	coinstate3 = 1;
 
 	//point total
+	level = 0;
 	points = 0;
 
 	//1, 2,3
@@ -775,7 +804,7 @@ void GameData::Initialize(void){
 
 }
 
-void GameData::Run(void){
+void GameData::Run(void) {
 
 	srand(time(NULL));
 
@@ -784,20 +813,23 @@ void GameData::Run(void){
 	game.Initialize();
 	game.playMusic();
 	FsRegisterOnPaintCallBack(RenderOverworld, &game);
+	std::tie(game.level, game.points) = game.GetData(game.level, game.points);
 
 	for (;;)
-	{	
+	{
 		FsPollDevice();
 		auto key = FsInkey();
 
 		if (FsGetKeyState(FSKEY_ESC))
 		{
+			// game.SaveGame(game.level, game.points);
 			std::cout << "\npressed esc" << std::endl;
 			terminate = true;
 			break;
 		}
 
-		if(game.gameState == 4 && game.px >= 650 && game.py >= 400){
+		if (game.gameState == 4 && game.px >= 650 && game.py >= 400) {
+			game.SaveGame(game.level, game.points);
 			std::cout << "At portal, now leaving overworld." << std::endl;
 			terminate = true;
 			break;

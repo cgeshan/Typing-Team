@@ -8,58 +8,29 @@
 #include "minigame_rockets.h"
 #include "textinput.h"
 
-int Rockets::GetData(void)
+//Point Call (wip)
+std::tuple <int, int> Rockets::GetData(int level, int points)
 {
-	int level;
-	FILE* fp = fopen("game.txt", "r");
-	if (nullptr != fp)
-	{
-		char str[256];
-		int lineNum = 1;
-		while (nullptr != fgets(str, 255, fp))
-		{
-			str[255] = 0;
-			printf(str);
-			lineNum++;
-		}
-		fclose(fp);
-		
-		if (str[0] == '1' || str[0] == '2' || str[0] == '3' || str[0] == '4')
-		{
-			if (str[0] == 49)
-			{
-				level = 1;
-			}
-			else if (str[0] == 50)
-			{
-				level = 2;
-			}
-			else if (str[0] == 51)
-			{
-				level = 3;
-			}
-			else if (str[0] == 52)
-			{
-				level = 4;
-			}
-			//printf("level %d", level);
-		}
+	Rockets r;
+	std::ifstream infile;
+	infile.open("game.txt", std::ifstream::in);
+	if (infile.good()) {
+		infile >> r.level >> r.points;
 	}
-	
-	else
-	{
-		level = 0;
-	}
-	return level;
+
+	std::cout << "level -> " << r.level << "\npoints -> " << r.points << std::endl;
+
+	return std::make_tuple(r.level, r.points);
+
 }
 
-void Rockets::SaveGame(int level, int points){
+void Rockets::SaveGame(int level, int points) {
 	FILE* fp = fopen("game.txt", "w");
 
-	if (nullptr != fp){
+	if (nullptr != fp) {
 		FILE* File;
 		File = fopen("game.txt", "w+");
-		fprintf(File, "%i\n%i", level, points);
+		fprintf(File, "%i %i", level, points);
 		fclose(File);
 	}
 }
@@ -69,22 +40,23 @@ void Rockets::Initialize()
 	x1 = 150;
 	x2 = 450;
 	y1 = 600; // rockets both start at the bottom of the screen
-	y2 = 600; 
+	y2 = 600;
 
-	vel1 = 5; // initial velocities for rockets  
-	vel2 = 5;
+	vel1 = 4; // initial velocities for rockets  
+	vel2 = 4;
 
 	vis1 = 1; // visability state, 1: rocket is on the screen, 0: rocket is not on the screen
 	vis2 = 0;
 
 	state1 = 0; // state becomes one when word is typed correctly (rocket speeds to top) 
-	state2 = 0; 
+	state2 = 0;
 
 	numLives = 3;
 	prevCheck = 0;
-	
+
 	wordCount = 0;
 	randWord = (rand() % (65));
+	std::tie(level, points) = GetData(level, points);
 	bool terminate = false;
 
 	// image data
@@ -96,7 +68,7 @@ void Rockets::Initialize()
 
 	png[2].Decode("Rocket2.png");	png[2].Flip();
 	if (0 == png[2].wid || 0 == png[2].hei) { printf("Failed to load Rocket2.png.\n"); }
-	
+
 	playMusic();
 }
 
@@ -111,7 +83,7 @@ void Rockets::drawBackground()
 
 void Rockets::drawRocket(char str[], int arraySize)
 {
-	int start;
+	int start = 0;
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -124,12 +96,17 @@ void Rockets::drawRocket(char str[], int arraySize)
 		glColor3ub(255, 255, 255);
 		if (arraySize > 4)
 		{
-			start = (x1+50) - (17.5 * (arraySize - 4));
+			start = (x1 + 50) - (17.5 * (arraySize - 4));
 		}
 		else if (arraySize < 4)
 		{
-			start = (x1+50) + (17.5 * (4 - arraySize));
+			start = (x1 + 50) + (17.5 * (4 - arraySize));
 		}
+		else
+		{
+			start = (x1 + 50) + (17.5 * (5 - arraySize));
+		}
+
 		glRasterPos2d(start, y1 + 50);
 		YsGlDrawFontBitmap20x32(str);
 		glFlush();
@@ -143,11 +120,11 @@ void Rockets::drawRocket(char str[], int arraySize)
 
 		if (arraySize > 4)
 		{
-			start = (x2+90) - (17.5 * (arraySize - 4));
+			start = (x2 + 90) - (17.5 * (arraySize - 4));
 		}
 		else if (arraySize < 4)
 		{
-			start = (x2+90) + (17.5 * (4 - arraySize));
+			start = (x2 + 90) + (17.5 * (4 - arraySize));
 		}
 
 		glRasterPos2d(start, y2 + 50);
@@ -176,12 +153,12 @@ void Rockets::moveRocket2()
 
 void Rockets::speedRocket1()
 {
-	vel1 += 4; 
+	vel1 += 4;
 
 	if (y1 < -100)
 	{
 		vel1 = 5; // return to original velocity
-		state1 = 0; 
+		state1 = 0;
 		y1 = 600; // reset y
 		x1 = (rand() % 601) + 100; // random value for x between 100 and 700
 		vis1 = 0; // rocket is no longer visable
@@ -194,12 +171,12 @@ void Rockets::speedRocket1()
 
 void Rockets::speedRocket2()
 {
-	vel2 += 4; 
+	vel2 += 4;
 
 	if (y2 < -100)
 	{
 		vel2 = 5; // return to original velocity
-		state2 = 0; 
+		state2 = 0;
 		y2 = 600; // reset y
 		x2 = (rand() % 601) + 100; // random value for x between 100 and 700
 		vis2 = 0; // rocket is no longer visable 
@@ -216,29 +193,29 @@ int Rockets::checkRockets()
 	{
 		y1 = 600;
 		y2 = 600;
-		return 1; 
+		return 1;
 	}
 	else
 	{
-		return 0; 
+		return 0;
 	}
 }
 
-void Rockets::drawRemainingLives(){
+void Rockets::drawRemainingLives() {
 
 	std::string strNum = std::to_string(numLives);
 	std::string strLives = "Remaining Lives: " + strNum;
 	char livesDisplay[256];
-	strcpy(livesDisplay, strLives.c_str()); 
+	strcpy(livesDisplay, strLives.c_str());
 
 	glRasterPos2i(500, 62);
 	YsGlDrawFontBitmap12x16(livesDisplay);
 
 }
 
-void Rockets::drawYouLost(){
-	for(int i = 0; i < 150; i++){
-		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+void Rockets::drawYouLost() {
+	for (int i = 0; i < 150; i++) {
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		drawBackground();
 
 		glRasterPos2i(62, 62);
@@ -251,8 +228,8 @@ void Rockets::drawYouLost(){
 		FsSleep(20);
 	}
 
-	for(int i = 0; i < 150; i++){
-		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	for (int i = 0; i < 150; i++) {
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		drawBackground();
 
 		glRasterPos2i(62, 62);
@@ -263,9 +240,9 @@ void Rockets::drawYouLost(){
 	}
 }
 
-void Rockets::drawYouWon(){
-	for(int i = 0; i < 150; i++){
-		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+void Rockets::drawYouWon() {
+	for (int i = 0; i < 150; i++) {
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		drawBackground();
 
 		glRasterPos2i(62, 62);
@@ -278,8 +255,8 @@ void Rockets::drawYouWon(){
 		FsSleep(20);
 	}
 
-	for(int i = 0; i < 150; i++){
-		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	for (int i = 0; i < 150; i++) {
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		drawBackground();
 
 		glRasterPos2i(62, 62);
@@ -290,12 +267,12 @@ void Rockets::drawYouWon(){
 	}
 }
 
-void Rockets::ReturnToMenu(void){
-	for(int i = 0; i < 50; i++){
-		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+void Rockets::ReturnToMenu(void) {
+	for (int i = 0; i < 50; i++) {
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		drawBackground();
-		
+
 		glColor3ub(236, 157, 117);
 		glRasterPos2i(82, 112);
 		YsGlDrawFontBitmap16x24("Returning to the Main Menu");
@@ -314,61 +291,78 @@ int Rockets::playMusic()
 	}
 	player.Start();
 	player.PlayOneShot(wav);
+	player.SetVolume(wav, 0.8);
 	return 0;
 }
 
-void Rockets::RunOneStep(void){
+void Rockets::DrawPointCount()
+{
+	glRasterPos2i(600, 30);
+	char pointstxt[256];
+	std::sprintf(pointstxt, "%d", points);
+	YsGlDrawFontBitmap16x20("Points: ");
+
+	glRasterPos2i(720, 30);
+	YsGlDrawFontBitmap16x20(pointstxt);
+}
+
+void Rockets::RunOneStep(void) {
 
 	FsPollDevice();
-	auto key=FsInkey();
-	auto c=FsInkeyChar();
+	auto key = FsInkey();
+	auto c = FsInkeyChar();
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	srand(time(NULL));
-	
+
 
 	std::string targetWord = wordBank[randWord];
 	auto len = targetWord.size();
 	char letters[256];
-	strcpy(letters, targetWord.c_str()); 
+	strcpy(letters, targetWord.c_str());
 
 	inputStr = textInput.str.GetPointer();
 
-	textInput.RunOneStep(key,c);
+	textInput.RunOneStep(key, c);
 
 	drawBackground();
+
 	drawRocket(letters, len);
 	moveRocket1();
 	moveRocket2();
 	textInput.Draw();
 	drawRemainingLives();
+	DrawPointCount();
 
 	// initialize time variables 
 	int time_init, time_final = 0;
 	time_init = time(NULL); // time how long the player lasts
 
-	if(FSKEY_ESC == key){
+	if (FsGetKeyState(FSKEY_ESC)) {
 		ReturnToMenu();
 		terminate = true;
 	}
 
-	if(FSKEY_ENTER == key){
-
+	if (FSKEY_ENTER == key) {
+		if (inputStr.GetPointer() != targetWord) {
+			points -= 10;
+		}
 		if (inputStr.GetPointer() == targetWord) // if rocket is not speeding **********and word is typed correctly**********
 		{
+			points += 20;
 			if (vis1 == 1 && state1 == 0) // if rocket is visable, not speeding, **********and word is typed correctly**********
-				{
-					state1 = 1;
-				}
-				if (vis2 == 1 && state2 == 0)
-				{
-					state2 = 1; 
-				}
+			{
+				state1 = 1;
+			}
+			if (vis2 == 1 && state2 == 0)
+			{
+				state2 = 1;
+			}
 
-			
+
 			auto completeTime = FsPassedTime();
-			std::cout << "Completion time: " << completeTime*0.001 << " seconds." << std::endl;
+			std::cout << "Completion time: " << completeTime * 0.001 << " seconds." << std::endl;
 		}
 
 		textInput.str.CleanUp();
@@ -376,44 +370,50 @@ void Rockets::RunOneStep(void){
 	}
 
 	if (vis1 == 1 && state1 == 1)
-		{
-			speedRocket1();
+	{
+		speedRocket1();
 
-		}
-		if (vis2 == 1 && state2 == 1)
-		{
-			speedRocket2();
+	}
+	if (vis2 == 1 && state2 == 1)
+	{
+		speedRocket2();
 
-		}
+	}
 	// std::cout << prevCheck << std::endl;
 	if (prevCheck == 0 && checkRockets() == 1)
 	{
 		numLives--;
-		if(vis1 == 1){
+		points -= 5;
+		if (vis1 == 1) {
 			vis1 = 0;
 			vis2 = 1;
-		}else if(vis2 == 1){
+		}
+		else if (vis2 == 1) {
 			vis2 = 0;
 			vis1 = 1;
 		}
 		time_final = time(NULL); // final time 
 	}
 	prevCheck = checkRockets();
-	
-	if(numLives == 0){
+
+	if (numLives == 0) {
 		//You Lost animation
 		drawYouLost();
+		if (level == 3) {
+			SaveGame(3, points);
+		}
+		else if (level == 4) {
+			SaveGame(4, points);
+		}
 		terminate = true;
 	}
-	
-	if(wordCount >= 10){
+
+	if (wordCount >= 10) {
 		//Winning animation
 		drawYouWon();
-		int level = GetData();
-		int points = GetData();
 		std::cout << "level = " << level << std::endl;
-		if(level == 3){
-			SaveGame(4, 4);
+		if (level <= 3) {
+			SaveGame(3, points);
 		}
 		terminate = true;
 	}

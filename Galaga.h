@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string>
+#include <fstream>
+#include <tuple>
 #include "fssimplewindow.h"
 #include "yssimplesound.h"
 #include "ysglfontdata.h"
@@ -23,20 +25,20 @@ public:
 class Galaga
 {
 public:
-	int enemyState, wordState, laserX, laserY, numHit, numLives, randWord, wordCount=0;
+	int enemyState, wordState, laserX, laserY, numHit, numLives, randWord, wordCount = 0;
 	double locationE, locationW, velE, velW;
 	GalagaImageData imgdat;
 
 	YsSoundPlayer player;
 	YsSoundPlayer::SoundData wav;
-	
+
 	//Music
 	int playMusic();
 
-    TextInput textInput;
-  	TextString inputStr;
+	TextInput textInput;
+	TextString inputStr;
 
-    std::string wordBank[66] = {"asteroid",
+	std::string wordBank[66] = { "asteroid",
 								"astronaut",
 								"astronomer",
 								"astronomy",
@@ -102,9 +104,15 @@ public:
 								"waning",
 								"waxing",
 								"zodiac"
-								};
+	};
 
-    bool terminate = false;
+	bool terminate = false;
+
+	int level;
+	int points;
+	void DrawPointCount();
+	void SaveGame(int level, int points);
+	std::tuple <int, int> GetData(int level, int points);
 
 	void Initialize();
 	void drawBackground();
@@ -113,11 +121,10 @@ public:
 	void wordInput();
 	void drawEnemy();
 	void shootEnemy();
-    void Run(void);
+	void Run(void);
 	void drawYouLost();
 	void drawYouWon();
-	int GetData(void);
-	void SaveGame(int level, int points);
+
 	void drawRemainingLives();
 	void ReturnToMenu();
 	void drawInput(TextInput in, TextString str);
@@ -126,4 +133,3 @@ public:
 
 /*}*/
 #endif
-

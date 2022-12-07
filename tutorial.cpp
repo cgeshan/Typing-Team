@@ -29,7 +29,6 @@ void Tutorial::PlayInstructions(void){
 		glRasterPos2i(0, 599);
 		glDrawPixels(bkgd.wid,bkgd.hei,GL_RGBA,GL_UNSIGNED_BYTE,bkgd.rgba);
 
-		
 		if(i < 400){
 			glRasterPos2i(82, 112);
 			YsGlDrawFontBitmap16x24("Welcome to Alphabet Astronauts!");
@@ -67,7 +66,7 @@ void Tutorial::ReturnToMenu(void){
 		glDrawPixels(bkgd.wid,bkgd.hei,GL_RGBA,GL_UNSIGNED_BYTE,bkgd.rgba);
 
 		glRasterPos2i(82, 112);
-		YsGlDrawFontBitmap16x24("Returning to the Main Menu");
+		YsGlDrawFontBitmap16x24("Now returning to the Main Menu");
 
 		FsSwapBuffers();
 		FsSleep(10);
@@ -138,7 +137,7 @@ void Tutorial::RunOneStep(void){
 		textInput.str.CleanUp();
 		inputStr.CleanUp();
 	}
-	if(wordCount >= sizeof(wordBank)/sizeof(wordBank[0]) || FSKEY_ESC == key){
+	if(wordCount >= sizeof(wordBank)/sizeof(wordBank[0]) || FsGetKeyState(FSKEY_ESC)) {
 		ReturnToMenu();
 		terminate = true;
 	}

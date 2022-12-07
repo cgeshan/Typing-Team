@@ -7,6 +7,8 @@
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
+#include <fstream>
+#include <tuple>
 #include "yssimplesound.h"
 #include "fssimplewindow.h"
 #include "yspng.h"
@@ -27,6 +29,9 @@ public:
 	YsSoundPlayer player;
 	YsSoundPlayer::SoundData wav;
 
+	void SaveGame(int level, int points);
+	std::tuple <int, int> GetData(int level, int points);
+	int level, points;
 
 	//Reset
 	void ResetScreen();
@@ -42,7 +47,7 @@ public:
 	void GeneratePlatforms();
 	void CheckCollision();
 	int platx1, platx2, platx3, platy1, platy2, platy3;
-	
+
 	//Player Movement
 	void DrawPlayer();
 	void MovePlayer();
@@ -68,7 +73,6 @@ public:
 	//Points
 	void PointCount();
 	void DrawPointCount();
-	int points;
 
 	//Music
 	int playMusic();
@@ -84,4 +88,3 @@ public:
 
 /*}*/
 #endif
-

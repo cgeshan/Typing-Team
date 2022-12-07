@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
+#include <fstream>
+#include <tuple>
 #include "fssimplewindow.h"
 #include "yspng.h"
 #include "ysglfontdata.h"
@@ -17,13 +19,13 @@ public:
 
 	YsSoundPlayer player;
 	YsSoundPlayer::SoundData wav;
-	
+
 	//Music
 	int playMusic();
-    TextInput textInput;
-  	TextString inputStr;
+	TextInput textInput;
+	TextString inputStr;
 
-    std::string wordBank[66] = {"asteroid",
+	std::string wordBank[66] = { "asteroid",
 								"astronaut",
 								"astronomer",
 								"astronomy",
@@ -89,9 +91,15 @@ public:
 								"waning",
 								"waxing",
 								"zodiac"
-								};
+	};
 	int wordCount, randWord;
 	bool terminate = false;
+
+	int level;
+	int points;
+	void DrawPointCount();
+	void SaveGame(int level, int points);
+	std::tuple <int, int> GetData(int level, int points);
 
 
 	double x1, y1, x2, y2;
@@ -106,9 +114,7 @@ public:
 	void speedRocket1(void);
 	void speedRocket2(void);
 	int checkRockets(void);
-	int GetData(void);
-	void SaveGame(int level, int points);
-    void RunOneStep(void);
+	void RunOneStep(void);
 	void drawYouLost();
 	void drawYouWon();
 	void ReturnToMenu();

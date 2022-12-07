@@ -31,6 +31,7 @@ void TextInput::Draw(void) const{
 	else{
 		copy.Add('_');
 	}
+
 	YsGlDrawFontBitmap16x24(copy.GetPointer());
 }
 
