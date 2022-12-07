@@ -363,14 +363,12 @@ int Menu::playMusic()
 
 int main(void)
 {
+	FsOpenWindow(0, 0, 800, 600, 1);
 	FsChangeToProgramDir();
 
 	Menu menu;
 	menu.Initialize();
 	menu.playMusic();
-
-	FsOpenWindow(0, 0, 800, 600, 1);
-
 
 	bool l1 = 0, l2 = 0, l3 = 0, l4 = 0;
 	bool h1 = 0, h2 = 0, h3 = 0, h4 = 0;
