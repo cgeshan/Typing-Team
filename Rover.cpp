@@ -538,7 +538,7 @@ void Rover::Run(void) {
 
 	for (;;)
 	{
-		std::cout << targetWord.length() << std::endl;
+// 		std::cout << targetWord.length() << std::endl;
 		if(targetWord.length() > 7){
 			r.randWord = (rand() % (65));
 			targetWord = r.wordBank[randWord];
