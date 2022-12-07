@@ -104,7 +104,7 @@ void Rockets::drawRocket(char str[], int arraySize)
 		}
 		else
 		{
-			start = (x1 + 50) + (17.5 * (5 - arraySize));
+			start = (x1 + 50) + (17.5);
 		}
 
 		glRasterPos2d(start, y1 + 50);
@@ -125,6 +125,10 @@ void Rockets::drawRocket(char str[], int arraySize)
 		else if (arraySize < 4)
 		{
 			start = (x2 + 90) + (17.5 * (4 - arraySize));
+		}
+		else
+		{
+			start = (x1 + 50) + (17.5 );
 		}
 
 		glRasterPos2d(start, y2 + 50);
