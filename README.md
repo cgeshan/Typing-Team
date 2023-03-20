@@ -8,7 +8,7 @@ This is a cross-platform typing game which utilizes C++ 11 Standard specific fea
 
 # **Building**
 
-Instructions for building the application, please see [install.md](https://github.com/cgeshan/Typing-Team/install.md). 
+Instructions for building the application, please see [install.md](https://github.com/cgeshan/Typing-Team/blob/main/install.md). 
 
 # **More Information**
 Team Members: 
