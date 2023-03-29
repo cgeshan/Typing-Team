@@ -15,13 +15,9 @@ The following GUI and media libraries were used. Credit to [CaptainYS](https://g
    - [yssimplesound](https://github.com/captainys/public/tree/master/src/yssimplesound)
    
 
-# **Building**
-
-Instructions for building the application, please see [install.md](https://github.com/cgeshan/Typing-Team/blob/main/install.md). 
-
 # **More Information**
 Team Members: 
 
    - [Charlotte Avra](https://www.linkedin.com/in/charlotteavra/)
 
-   - [Connor Geshan](https://www.linkedin.com/in/connorgeshan/)   
+   - [Connor Geshan](cgeshan.github.io)   
