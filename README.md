@@ -20,4 +20,4 @@ Team Members:
 
    - [Charlotte Avra](https://www.linkedin.com/in/charlotteavra/)
 
-   - [Connor Geshan](cgeshan.github.io)   
+   - [Connor Geshan](https://cgeshan.github.io)   
