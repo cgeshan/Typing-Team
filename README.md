@@ -32,7 +32,7 @@ Team Members:
    - [Dexter Czuba](https://www.linkedin.com/in/dexter-czuba-3b6536218/)
 
 
-   - [Connor Geshan](https://www.linkedin.com/in/connorgeshan/)
+   - [Connor Geshan](https://cgeshan.github.io)
 
 
    - [Clifton McKenzie](https://www.linkedin.com/in/clifton-mckenzie/)
