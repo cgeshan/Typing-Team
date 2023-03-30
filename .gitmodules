@@ -1,0 +1,6 @@
+[submodule "public"]
+	path = public
+	url = https://github.com/captainys/public.git
+[submodule "mmlplayer"]
+	path = mmlplayer
+	url = https://github.com/captainys/mmlplayer.git
