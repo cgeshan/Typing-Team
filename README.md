@@ -20,7 +20,7 @@ This game also uses the following libraries from [CaptainYS](https://github.com/
 
 # **Building**
 
-Instructions for building the application, please see [install.md](https://ramennoodle.me.cmu.edu/Bonobo.Git.Server/Repository/Blob/23a02626-3ed4-4dd4-8157-cbf7628ddb97?encodedName=master&encodedPath=install.md). 
+Instructions for building the application, please see [install.md](https://github.com/cgeshan/Typing-Team/blob/main/install.md). 
 
 # **More Information**
 Team Members: 
