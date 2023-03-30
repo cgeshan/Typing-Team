@@ -7,6 +7,8 @@
 #include "Galaga.h"
 #include "Rover.h"
 #include "overworld.h"
+#include "textinput.h"
+#include "textstring.h"
 
 //Menu Program
 GLuint texId[14];
@@ -15,7 +17,7 @@ std::tuple <int, int> Menu::GetData(int level, int points)
 {
 	Menu m;
 	std::ifstream infile;
-	infile.open("game.txt", std::ifstream::in);
+	infile.open("media/game.txt", std::ifstream::in);
 	if (infile.good()) {
 		infile >> m.level >> m.points;
 	}
@@ -27,11 +29,11 @@ std::tuple <int, int> Menu::GetData(int level, int points)
 }
 
 void Menu::SaveGame(int level, int points) {
-	FILE* fp = fopen("game.txt", "w");
+	FILE* fp = fopen("media/game.txt", "w");
 
 	if (nullptr != fp) {
 		FILE* File;
-		File = fopen("game.txt", "w+");
+		File = fopen("media/game.txt", "w+");
 		fprintf(File, "%i %i", level, points);
 		fclose(File);
 	}
@@ -59,37 +61,37 @@ void Menu::Initialize(void)
 	level = 0;
 	points = 0;
 
-	png[0].Decode("BG.png"); //BackGround	
+	png[0].Decode("media/BG.png"); //BackGround	
 	png[0].Flip();
-	png[1].Decode("Mars_Rover1.png"); // Rover	
+	png[1].Decode("media/Mars_Rover1.png"); // Rover	
 	png[1].Flip();
-	png[2].Decode("Alphabet_title1.png");//Title1;
+	png[2].Decode("media/Alphabet_title1.png");//Title1;
 	png[2].Flip();
-	png[3].Decode("Astronauts_title1.png");//Title2;
+	png[3].Decode("media/Astronauts_title1.png");//Title2;
 	png[3].Flip();
-	png[4].Decode("b1.png"); //B1	
+	png[4].Decode("media/b1.png"); //B1	
 	png[4].Flip();
-	png[5].Decode("b2.png"); //B2	
+	png[5].Decode("media/b2.png"); //B2	
 	png[5].Flip();
-	png[6].Decode("b3.png"); //B3
+	png[6].Decode("media/b3.png"); //B3
 	png[6].Flip();
-	png[7].Decode("b4.png"); //B4
+	png[7].Decode("media/b4.png"); //B4
 	png[7].Flip();
-	png[8].Decode("reset.png"); //Restart	
+	png[8].Decode("media/reset.png"); //Restart	
 	png[8].Flip();
-	png[9].Decode("overworld.png"); //OverWorld
+	png[9].Decode("media/overworld.png"); //OverWorld
 	png[9].Flip();
-	png[10].Decode("bh1.png"); //bh1	
+	png[10].Decode("media/bh1.png"); //bh1	
 	png[10].Flip();
-	png[11].Decode("bh2.png"); //bh2
+	png[11].Decode("media/bh2.png"); //bh2
 	png[11].Flip();
-	png[12].Decode("bh3.png"); //bh3
+	png[12].Decode("media/bh3.png"); //bh3
 	png[12].Flip();
-	png[13].Decode("bh4.png"); //bh4
+	png[13].Decode("media/bh4.png"); //bh4
 	png[13].Flip();
-	png[14].Decode("tutorial.png"); //Tutorial Button 
+	png[14].Decode("media/tutorial.png"); //Tutorial Button 
 	png[14].Flip();
-	png[15].Decode("BG_fadeout.png"); //BG w/ faded buttons
+	png[15].Decode("media/BG_fadeout.png"); //BG w/ faded buttons
 	png[15].Flip();
 }
 
@@ -351,7 +353,7 @@ void Menu::DrawPointCount()
 
 int Menu::playMusic()
 {
-	if (YSOK != wav.LoadWav("menu_music.wav"))
+	if (YSOK != wav.LoadWav("media/menu_music.wav"))
 	{
 		printf("failed to load music");
 		return 1;

@@ -8,7 +8,7 @@ std::tuple <int, int> GameData::GetData(int level, int points)
 {
 	GameData gd;
 	std::ifstream infile;
-	infile.open("game.txt", std::ifstream::in);
+	infile.open("media/game.txt", std::ifstream::in);
 	if (infile.good()) {
 		infile >> gd.level >> gd.points;
 	}
@@ -20,11 +20,11 @@ std::tuple <int, int> GameData::GetData(int level, int points)
 }
 
 void GameData::SaveGame(int level, int points) {
-	FILE* fp = fopen("game.txt", "w");
+	FILE* fp = fopen("media/game.txt", "w");
 
 	if (nullptr != fp) {
 		FILE* File;
-		File = fopen("game.txt", "w+");
+		File = fopen("media/game.txt", "w+");
 		fprintf(File, "%i %i", level, points);
 		fclose(File);
 	}
@@ -665,7 +665,7 @@ void GameData::DrawPortal()
 //Sound
 int GameData::playMusic()
 {
-	if (YSOK != wav.LoadWav("overworld_music.wav"))
+	if (YSOK != wav.LoadWav("media/overworld_music.wav"))
 	{
 		printf("failed to load music");
 		return 1;
@@ -767,18 +767,18 @@ void GameData::Initialize(void) {
 	imgdat.firstRenderingPass = true;
 
 	//Images
-	imgdat.png[0].Decode("BG.png");
-	imgdat.png[1].Decode("Idle.png");
-	imgdat.png[2].Decode("WalkA.png");
-	imgdat.png[3].Decode("WalkB.png");
-	imgdat.png[4].Decode("Jump.png");
-	imgdat.png[5].Decode("Platform.png");
-	imgdat.png[6].Decode("Platform.png");
-	imgdat.png[7].Decode("Platform.png");
-	imgdat.png[8].Decode("Portal.png");
-	imgdat.png[9].Decode("moon_coin.png");
-	imgdat.png[10].Decode("moon_coin.png");
-	imgdat.png[11].Decode("moon_coin.png");
+	imgdat.png[0].Decode("media/BG.png");
+	imgdat.png[1].Decode("media/Idle.png");
+	imgdat.png[2].Decode("media/WalkA.png");
+	imgdat.png[3].Decode("media/WalkB.png");
+	imgdat.png[4].Decode("media/Jump.png");
+	imgdat.png[5].Decode("media/Platform.png");
+	imgdat.png[6].Decode("media/Platform.png");
+	imgdat.png[7].Decode("media/Platform.png");
+	imgdat.png[8].Decode("media/Portal.png");
+	imgdat.png[9].Decode("media/moon_coin.png");
+	imgdat.png[10].Decode("media/moon_coin.png");
+	imgdat.png[11].Decode("media/moon_coin.png");
 
 	vy = 0.0;
 	facestate = 1;

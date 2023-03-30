@@ -7,13 +7,14 @@
 #include "yssimplesound.h"
 #include "minigame_rockets.h"
 #include "textinput.h"
+#include "textstring.h"
 
 //Point Call (wip)
 std::tuple <int, int> Rockets::GetData(int level, int points)
 {
 	Rockets r;
 	std::ifstream infile;
-	infile.open("game.txt", std::ifstream::in);
+	infile.open("media/game.txt", std::ifstream::in);
 	if (infile.good()) {
 		infile >> r.level >> r.points;
 	}
@@ -25,11 +26,11 @@ std::tuple <int, int> Rockets::GetData(int level, int points)
 }
 
 void Rockets::SaveGame(int level, int points) {
-	FILE* fp = fopen("game.txt", "w");
+	FILE* fp = fopen("media/game.txt", "w");
 
 	if (nullptr != fp) {
 		FILE* File;
-		File = fopen("game.txt", "w+");
+		File = fopen("media/game.txt", "w+");
 		fprintf(File, "%i %i", level, points);
 		fclose(File);
 	}
@@ -60,13 +61,13 @@ void Rockets::Initialize()
 	bool terminate = false;
 
 	// image data
-	png[0].Decode("space.png");	png[0].Flip();
+	png[0].Decode("media/space.png");	png[0].Flip();
 	if (0 == png[0].wid || 0 == png[0].hei) { printf("Failed to load space.png.\n"); }
 
-	png[1].Decode("Rocket1.png");	png[1].Flip();
+	png[1].Decode("media/Rocket1.png");	png[1].Flip();
 	if (0 == png[1].wid || 0 == png[1].hei) { printf("Failed to load Rocket1.png.\n"); }
 
-	png[2].Decode("Rocket2.png");	png[2].Flip();
+	png[2].Decode("media/Rocket2.png");	png[2].Flip();
 	if (0 == png[2].wid || 0 == png[2].hei) { printf("Failed to load Rocket2.png.\n"); }
 
 	playMusic();
@@ -288,7 +289,7 @@ void Rockets::ReturnToMenu(void) {
 
 int Rockets::playMusic()
 {
-	if (YSOK != wav.LoadWav("rockets_music.wav"))
+	if (YSOK != wav.LoadWav("media/rockets_music.wav"))
 	{
 		printf("failed to load music");
 		return 1;

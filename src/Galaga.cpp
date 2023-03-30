@@ -1,5 +1,6 @@
 #include "Galaga.h"
 #include "textinput.h"
+#include "textstring.h"
 
 /*
 added txtinput.h
@@ -12,7 +13,7 @@ std::tuple <int, int> Galaga::GetData(int level, int points)
 {
 	Galaga g;
 	std::ifstream infile;
-	infile.open("game.txt", std::ifstream::in);
+	infile.open("media/game.txt", std::ifstream::in);
 	if (infile.good()) {
 		infile >> g.level >> g.points;
 	}
@@ -24,11 +25,11 @@ std::tuple <int, int> Galaga::GetData(int level, int points)
 }
 
 void Galaga::SaveGame(int level, int points) {
-	FILE* fp = fopen("game.txt", "w");
+	FILE* fp = fopen("media/game.txt", "w");
 
 	if (nullptr != fp) {
 		FILE* File;
-		File = fopen("game.txt", "w+");
+		File = fopen("media/game.txt", "w+");
 		fprintf(File, "%i %i", level, points);
 		fclose(File);
 	}
@@ -54,8 +55,8 @@ void Galaga::Initialize()
 	std::tie(level, points) = GetData(level, points);
 
 	imgdat.firstRenderingPass = true;
-	imgdat.png[0].Decode("Player_Ship.png");
-	imgdat.png[1].Decode("Enemy_Ship.png");
+	imgdat.png[0].Decode("media/Player_Ship.png");
+	imgdat.png[1].Decode("media/Enemy_Ship.png");
 }
 
 void Galaga::drawBackground()
@@ -325,7 +326,7 @@ void Galaga::drawInput(TextInput in, TextString str) {
 
 int Galaga::playMusic()
 {
-	if (YSOK != wav.LoadWav("galaga_music.wav"))
+	if (YSOK != wav.LoadWav("media/galaga_music.wav"))
 	{
 		printf("failed to load music");
 		return 1;

@@ -14,6 +14,7 @@
 #include "ysglfontdata.h"
 #include "minigame_mars.h"
 #include "textinput.h"
+#include "textstring.h"
 #include "tutorial.h"
 
 //Point Call (wip)
@@ -21,7 +22,7 @@ std::tuple <int, int> Mars::GetData(int level, int points)
 {
 	Mars m;
 	std::ifstream infile;
-	infile.open("game.txt", std::ifstream::in);
+	infile.open("media/game.txt", std::ifstream::in);
 	if (infile.good()) {
 		infile >> m.level >> m.points;
 	}
@@ -33,11 +34,11 @@ std::tuple <int, int> Mars::GetData(int level, int points)
 }
 
 void Mars::SaveGame(int level, int points) {
-	FILE* fp = fopen("game.txt", "w");
+	FILE* fp = fopen("media/game.txt", "w");
 
 	if (nullptr != fp) {
 		FILE* File;
-		File = fopen("game.txt", "w+");
+		File = fopen("media/game.txt", "w+");
 		fprintf(File, "%i %i", level, points);
 		fclose(File);
 	}
@@ -78,16 +79,16 @@ void Mars::Initialize(void)
 	initiate_jump = 0; // 0: Enter has not been selected or word typed incorrectly 1: jump initiated, waiting to jump till obstacle is close enough
 
 	// image data
-	png[0].Decode("mars_background.png");	png[0].Flip();
+	png[0].Decode("media/mars_background.png");	png[0].Flip();
 	if (0 == png[0].wid || 0 == png[0].hei) { printf("Failed to load mars_background.png.\n"); }
 
-	png[1].Decode("mars_rover_rotated.png");	png[1].Flip();
+	png[1].Decode("media/mars_rover_rotated.png");	png[1].Flip();
 	if (0 == png[1].wid || 0 == png[1].hei) { printf("Failed to load mars_rover_rotated.png.\n"); }
 
-	png[2].Decode("rock1_rotated.png");	png[2].Flip();
+	png[2].Decode("media/rock1_rotated.png");	png[2].Flip();
 	if (0 == png[2].wid || 0 == png[2].hei) { printf("Failed to load rock1_rotated.png.\n"); }
 
-	png[3].Decode("rock2_rotated.png");	png[3].Flip();
+	png[3].Decode("media/rock2_rotated.png");	png[3].Flip();
 	if (0 == png[3].wid || 0 == png[3].hei) { printf("Failed to load rock2_rotated.png.\n"); }
 
 	playMusic();
@@ -318,7 +319,7 @@ void Mars::DrawPointCount()
 //Sound
 int Mars::playMusic()
 {
-	if (YSOK != wav.LoadWav("mars_music.wav"))
+	if (YSOK != wav.LoadWav("media/mars_music.wav"))
 	{
 		printf("failed to load music");
 		return 1;

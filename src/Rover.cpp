@@ -1,4 +1,7 @@
 #include "Rover.h"
+#include "textinput.h"
+#include "textstring.h"
+
 
 GLuint RoverTextureId[10];
 
@@ -7,7 +10,7 @@ std::tuple <int, int> Rover::GetData(int level, int points)
 {
 	Rover r;
 	std::ifstream infile;
-	infile.open("game.txt", std::ifstream::in);
+	infile.open("media/game.txt", std::ifstream::in);
 	if (infile.good()) {
 		infile >> r.level >> r.points;
 	}
@@ -19,11 +22,11 @@ std::tuple <int, int> Rover::GetData(int level, int points)
 }
 
 void Rover::SaveGame(int level, int points) {
-	FILE* fp = fopen("game.txt", "w");
+	FILE* fp = fopen("media/game.txt", "w");
 
 	if (nullptr != fp) {
 		FILE* File;
-		File = fopen("game.txt", "w+");
+		File = fopen("media/game.txt", "w+");
 		fprintf(File, "%i %i", level, points);
 		fclose(File);
 	}
@@ -50,12 +53,12 @@ void Rover::Initialize()
 	changeWords = false;
 
 	imgdat.firstRenderingPass = true;
-	imgdat.png[0].Decode("RacingBG_moonGround.png");
-	imgdat.png[1].Decode("Sign.png");
-	imgdat.png[2].Decode("Rock1Gray.png");
-	imgdat.png[3].Decode("Rock2Gray.png");
-	imgdat.png[4].Decode("EnemyCar.png");
-	imgdat.png[5].Decode("PlayerCar.png");
+	imgdat.png[0].Decode("media/RacingBG_moonGround.png");
+	imgdat.png[1].Decode("media/Sign.png");
+	imgdat.png[2].Decode("media/Rock1Gray.png");
+	imgdat.png[3].Decode("media/Rock2Gray.png");
+	imgdat.png[4].Decode("media/EnemyCar.png");
+	imgdat.png[5].Decode("media/PlayerCar.png");
 	//imgdat.png[6].Decode("Stars.png");
 
 	for (int i = 0; i < 50; i++)
@@ -460,7 +463,7 @@ void Rover::DrawPointCount()
 //Sound
 int Rover::playMusic()
 {
-	if (YSOK != wav.LoadWav("rover_music.wav"))
+	if (YSOK != wav.LoadWav("media/rover_music.wav"))
 	{
 		printf("failed to load music");
 		return 1;
