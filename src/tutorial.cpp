@@ -86,7 +86,7 @@ void Tutorial::Initialize(void){
 	terminate = false;
 	state = 0;
 	textInput.BeginInput();
-	bkgd.Decode("../media/background.png");
+	bkgd.Decode("media/background.png");
 	bkgd.Flip();
 }
 

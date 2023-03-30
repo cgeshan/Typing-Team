@@ -40,5 +40,11 @@ target_link_libraries(main fssimplewindow yssimplesound)
 add_custom_command(
         TARGET main POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy
+                ${CMAKE_CURRENT_SOURCE_DIR}/media/
+                ${CMAKE_CURRENT_BINARY_DIR}/media/)
+                
+add_custom_command(
+        TARGET main POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
                 ${CMAKE_CURRENT_SOURCE_DIR}/media/*
-                ${CMAKE_CURRENT_BINARY_DIR}/media)
+                ${CMAKE_CURRENT_BINARY_DIR}/media/)
