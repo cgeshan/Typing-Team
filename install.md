@@ -10,7 +10,7 @@ This game also uses the following libraries from [CaptainYS](https://github.com/
 
 # **Cloning the repository**
 Below are common instructions for cloning our repository
-  Clone the Unoptimized repository
+  Clone the project repository
 ```console
 
 	  $ git clone https://github.com/cgeshan/Typing-Team.git
