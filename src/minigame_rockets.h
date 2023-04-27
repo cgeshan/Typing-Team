@@ -17,8 +17,8 @@ class Rockets
 public:
 	YsRawPngDecoder png[3];
 
-	YsSoundPlayer player;
-	YsSoundPlayer::SoundData wav;
+	YsSoundPlayer rocketsPlayer;
+	YsSoundPlayer::SoundData rocketsWav;
 
 	//Music
 	int playMusic();

@@ -463,14 +463,14 @@ void Rover::DrawPointCount()
 //Sound
 int Rover::playMusic()
 {
-	if (YSOK != wav.LoadWav("media/rover_music.wav"))
+	if (YSOK != roverWav.LoadWav("media/rover_music.wav"))
 	{
 		printf("failed to load music");
 		return 1;
 	}
-	player.Start();
-	player.PlayOneShot(wav);
-	player.SetVolume(wav, 0.8);
+	roverPlayer.Start();
+	roverPlayer.PlayOneShot(roverWav);
+	roverPlayer.SetVolume(roverWav, 0.8);
 	return 0;
 }
 

@@ -326,14 +326,14 @@ void Galaga::drawInput(TextInput in, TextString str) {
 
 int Galaga::playMusic()
 {
-	if (YSOK != wav.LoadWav("media/galaga_music.wav"))
+	if (YSOK != galagaWav.LoadWav("media/galaga_music.wav"))
 	{
 		printf("failed to load music");
 		return 1;
 	}
-	player.Start();
-	player.PlayOneShot(wav);
-	player.SetVolume(wav, 0.8);
+	galagaPlayer.Start();
+	galagaPlayer.PlayOneShot(galagaWav);
+	galagaPlayer.SetVolume(galagaWav, 0.8);
 	return 0;
 }
 

@@ -665,13 +665,13 @@ void GameData::DrawPortal()
 //Sound
 int GameData::playMusic()
 {
-	if (YSOK != wav.LoadWav("media/overworld_music.wav"))
+	if (YSOK != overworldWav.LoadWav("media/overworld_music.wav"))
 	{
 		printf("failed to load music");
 		return 1;
 	}
-	player.Start();
-	player.PlayOneShot(wav);
+	overworldPlayer.Start();
+	overworldPlayer.PlayOneShot(overworldWav);
 	return 0;
 }
 

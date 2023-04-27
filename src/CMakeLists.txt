@@ -52,14 +52,29 @@ endif()
 
 target_link_libraries(main fssimplewindow yssimplesound)
 
-add_custom_command(
-        TARGET main POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy
-                ${CMAKE_CURRENT_SOURCE_DIR}/media/
-                ${CMAKE_CURRENT_BINARY_DIR}/media/)
-                
-add_custom_command(
-        TARGET main POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy
-                ${CMAKE_CURRENT_SOURCE_DIR}/media/*
-                ${CMAKE_CURRENT_BINARY_DIR}/media/)
+message(STATUS "Copying media files")
+
+# Set the source directory to the current directory
+set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+
+# Set the destination directory to a subdirectory called "media" in the build directory
+set(DEST_DIR ${CMAKE_BINARY_DIR}/)
+
+# Determine if the operating system is macOS
+if(APPLE)
+  # Copy the media folder, excluding .wav files due to yssimplesound issue
+  message(STATUS "Game music is not playable on MAC OSX")
+  file(GLOB MEDIA_FILES ${SOURCE_DIR}/media/*)
+  foreach(MEDIA_FILE ${MEDIA_FILES})
+    get_filename_component(MEDIA_FILENAME ${MEDIA_FILE} NAME)
+    if(NOT ${MEDIA_FILENAME} MATCHES ".*\\.wav")
+      file(COPY ${MEDIA_FILE} DESTINATION ${DEST_DIR}/media)
+    endif()
+  endforeach()
+
+else()
+  # Copy the entire media folder
+  file(COPY ${SOURCE_DIR}/media DESTINATION ${DEST_DIR})
+
+endif()# Copy the media folder using the file command
+

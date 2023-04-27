@@ -35,8 +35,8 @@ public:
 
 	RoverImageData imgdat;
 
-	YsSoundPlayer player;
-	YsSoundPlayer::SoundData wav;
+	YsSoundPlayer roverPlayer;
+	YsSoundPlayer::SoundData roverWav;
 
 	//Music
 	int playMusic();

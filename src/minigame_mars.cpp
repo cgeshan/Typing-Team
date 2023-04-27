@@ -319,14 +319,14 @@ void Mars::DrawPointCount()
 //Sound
 int Mars::playMusic()
 {
-	if (YSOK != wav.LoadWav("media/mars_music.wav"))
+	if (YSOK != marsWav.LoadWav("media/mars_music.wav"))
 	{
 		printf("failed to load music");
 		return 1;
 	}
-	player.Start();
-	player.PlayOneShot(wav);
-	player.SetVolume(wav, 0.8);
+	marsPlayer.Start();
+	marsPlayer.PlayOneShot(marsWav);
+	marsPlayer.SetVolume(marsWav, 0.8);
 	return 0;
 }
 

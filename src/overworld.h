@@ -26,8 +26,8 @@ class GameData
 public:
 	OverworldImageData imgdat;
 
-	YsSoundPlayer player;
-	YsSoundPlayer::SoundData wav;
+	YsSoundPlayer overworldPlayer;
+	YsSoundPlayer::SoundData overworldWav;
 
 	void SaveGame(int level, int points);
 	std::tuple <int, int> GetData(int level, int points);

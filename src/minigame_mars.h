@@ -16,8 +16,8 @@ class Mars
 public:
 	YsRawPngDecoder png[4];
 
-	YsSoundPlayer player;
-	YsSoundPlayer::SoundData wav;
+	YsSoundPlayer marsPlayer;
+	YsSoundPlayer::SoundData marsWav;
 
 	//Music
 	int playMusic();

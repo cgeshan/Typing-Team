@@ -289,14 +289,14 @@ void Rockets::ReturnToMenu(void) {
 
 int Rockets::playMusic()
 {
-	if (YSOK != wav.LoadWav("media/rockets_music.wav"))
+	if (YSOK != rocketsWav.LoadWav("media/rockets_music.wav"))
 	{
 		printf("failed to load music");
 		return 1;
 	}
-	player.Start();
-	player.PlayOneShot(wav);
-	player.SetVolume(wav, 0.8);
+	rocketsPlayer.Start();
+	rocketsPlayer.PlayOneShot(rocketsWav);
+	rocketsPlayer.SetVolume(rocketsWav, 0.8);
 	return 0;
 }
 

@@ -29,8 +29,8 @@ public:
 	double locationE, locationW, velE, velW;
 	GalagaImageData imgdat;
 
-	YsSoundPlayer player;
-	YsSoundPlayer::SoundData wav;
+	YsSoundPlayer galagaPlayer;
+	YsSoundPlayer::SoundData galagaWav;
 
 	//Music
 	int playMusic();
