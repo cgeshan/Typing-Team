@@ -1,39 +1,54 @@
-if(MSVC)
-	set(EXE_TYPE WIN32)
+if(APPLE)
+	message(STATUS "MAC OSX found! Building with MACOSX_BUNDLE")
+        add_executable(main MACOSX_BUNDLE Menu.cpp
+                                  Rover.cpp
+                                  yspng.cpp
+                                  Galaga.cpp
+                                  tutorial.cpp
+                                  overworld.cpp
+                                  textinput.cpp
+                                  textstring.cpp
+                                  minigame_mars.cpp
+                                  minigame_rockets.cpp
+  
+                                  ysglfontdata.c
+  
+                                  Menu.h
+                                  Rover.h
+                                  yspng.h
+                                  Galaga.h
+                                  tutorial.h
+                                  overworld.h
+                                  textinput.h
+                                  textstring.h
+                                  ysglfontdata.h
+                                  minigame_mars.h
+                                  genericchararray.h
+                                  minigame_rockets.h)
 
-elseif(APPLE)
-	set(EXE_TYPE MACOSX_BUNDLE)
+else()
+        if(MSVC)
+                message(STATUS "MSVC found!")
 
-elseif()
-    set(EXE_TYPE )
+        else()
+                message(STATUS "UNIX OS found!")
+        endif()
+
+        add_executable(main Menu.cpp Menu.h
+                            Rover.cpp Rover.h
+                            yspng.cpp yspng.h
+                            Galaga.cpp Galaga.h
+                            tutorial.cpp tutorial.h
+                            overworld.cpp overworld.h
+                            textinput.cpp textinput.h
+                            textstring.cpp textstring.h
+                            minigame_mars.cpp minigame_mars.h
+                            minigame_rockets.cpp minigame_rockets.h
+
+                            ysglfontdata.c)
     
 endif()
 
-add_executable(main ${EXE_TYPE}     Menu.cpp
-                                    Rover.cpp
-                                    yspng.cpp
-                                    Galaga.cpp
-                                    tutorial.cpp
-                                    overworld.cpp
-                                    textinput.cpp
-                                    textstring.cpp
-                                    minigame_mars.cpp
-                                    minigame_rockets.cpp
-
-                                    ysglfontdata.c
-
-                                    Menu.h
-                                    Rover.h
-                                    yspng.h
-                                    Galaga.h
-                                    tutorial.h
-                                    overworld.h
-                                    textinput.h
-                                    textstring.h
-                                    ysglfontdata.h
-                                    minigame_mars.h
-                                    genericchararray.h
-                                    minigame_rockets.h)
 
 target_link_libraries(main fssimplewindow yssimplesound)
 
