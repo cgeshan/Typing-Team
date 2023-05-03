@@ -12,9 +12,7 @@ This game also uses the following libraries from [CaptainYS](https://github.com/
 Below are common instructions for cloning our repository
   Clone the project repository
 ```
-
 	  git clone https://github.com/cgeshan/Typing-Team.git
-
 ```
 **Building the application**               
 ============
@@ -22,41 +20,34 @@ Below are instructions for building our application, build directory MUST be out
   Create build directory
 ```
 	mkdir build
-
 ```
   Navigate to build folder
 ```
 	cd build
-
 ```
   Generate project make files 
 ```
 	cmake ../Typing-Team
-
 ```
   Build application (this will take some time)
 ```
 	cmake --build . --config Release --target main
-
 ```
 ### Start the application OS specific
 #### Linux
 -------------------
 ```
 	./src/main
-
 ```
 #### MAC OS X
 -------------------
 
 ```	
 	./src/main.app/Contents/MacOS/main
-
 ```
 
 #### Windows
 -------------------
 ```
 	Release\main.exe
-
 ```
