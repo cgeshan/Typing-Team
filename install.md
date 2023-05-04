@@ -24,7 +24,6 @@ Below are instructions for building our application, build directory MUST be out
 ```
    Initialize submodules
 ```
-	cd Typing-team
 	git submodule update --init	
 ```
   Create build directory
