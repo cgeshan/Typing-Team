@@ -17,9 +17,13 @@ Below are common instructions for cloning our repository
 **Building the application**               
 ============
 Below are instructions for building our application, build directory MUST be outside of the source directory. 
+   Navigate to the cloned folder
+```
+	cd Typing-team
+```
    Initialize submodules
 ```
-	cd Typping-team
+	cd Typing-team
 	git submodule update --init	
 ```
   Create build directory
