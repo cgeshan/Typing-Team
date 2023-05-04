@@ -16,7 +16,8 @@ Below are common instructions for cloning our repository
 ```
 **Building the application**               
 ============
-Below are instructions for building our application, build directory MUST be outside of the source directory. 
+Below are instructions for building our application, build directory MUST be outside of the source directory. \n
+
    Navigate to the cloned folder
 ```
 	cd Typing-team
